@@ -1,11 +1,5 @@
 import { View, Text, Image, ImageBackground, TouchableOpacity, ScrollView } from 'react-native'
 import React from 'react'
-import styles from '../../../styles'
-import Background from '../../../assets/background.jpg'
-import YellowStar from '../../../assets/YellowStar.png';
-import PieChart from 'react-native-pie-chart'
-// import Back from '../../../assets/back-icon.png'
-import UserIcon from '../../../assets/userIcon.png';
 import {useNavigation} from '@react-navigation/native';
 import BackIcon from '../../../assets/back-button.png'
 import { moderateScale } from '../../../styles/mixins'

@@ -1,14 +1,11 @@
 import { View, Text, Image, ImageBackground, TouchableOpacity, ScrollView, StyleSheet } from 'react-native'
     import React, { useEffect } from 'react'
     import styles from '../../../styles'
-    import { connect } from 'react-redux'
     import { cases } from '../../../data/cases'
     import { services } from '../../../data/services'
     import Background from '../../../assets/background.jpg'
     import YellowStar from '../../../assets/YellowStar.png';
     import PieChart from 'react-native-pie-chart'
-    // import Back from '../../../assets/back-icon.png'
-    import NameEditIcon from '../../../assets/NameEditIcon.png';
     import userIcon from '../../../assets/userIcon.png';
     import ProfileMesssageIcon from '../../../assets/ProfileMesssageIcon.png';
     import CaseDetailComponent from '../../../components/CaseDetailComponent'
@@ -17,12 +14,15 @@ import { View, Text, Image, ImageBackground, TouchableOpacity, ScrollView, Style
     import { ratings } from '../../../data/ratings'
     import { moderateScale } from '../../../styles/mixins'
     import {useNavigation} from '@react-navigation/native';
-    import CallIcon from '../../../assets/CallSelected.png'
-    import {useSelector} from'react-redux';
+    import CallIcon from '../../../assets/ProfileCallIcon.png'
     import BackIcon from '../../../assets/back-button.png'
-const LawyerProfile = () => {
-    
-   
+
+import ZegoUIKitPrebuiltCallService, {ZegoSendCallInvitationButton,} from '@zegocloud/zego-uikit-prebuilt-call-rn';
+
+const LawyerProfile = ({route}) => {
+
+  const {lawyer} = route.params;
+  console.log('lawyerId',lawyer);
       
     
       //console.log(props);
@@ -30,33 +30,7 @@ const LawyerProfile = () => {
       const series = [10,13,23,35,13,20];
        const sliceColor = [ '#497AF9', '#789DFB', '#E5E5E5','#497AF9','#789DFB','#E5E5E5'];
        const navigation = useNavigation();
-       
-      // const setPieChart = () => {
-    
-      //   let tempSeries = [];
-      //   let tempColor = [];
-      //   cases.map((item) => {
-    
-      //     tempSeries.push(item.percent);
-      //     tempColor.push(item.color);
-      //   })
-      //   setSeries(tempSeries);
-      //   setSliceColor(tempColor);
-        
-      // }
-    
-      // console.log(series,sliceColor);
-      // useEffect(() => {
-    
-      //     setPieChart();
-    
-      // },[])
-    
-      // useEffect(() => {
-    
-        
-      // },[])
-    
+     
       return (
         <ScrollView style={{backgroundColor:'white'}}>
         <View style={[styles.container,{backgroundColor: 'white',}]}>
@@ -89,7 +63,7 @@ const LawyerProfile = () => {
           {/* name */}
           <View style={{paddingHorizontal:20,marginTop:10}}>
             <View style={[styles.alignViewCenter, styles.alignItemsCenter, {marginTop: 50, width: '100%', flexDirection:'row'}]}>
-              <Text style={{fontSize:20,fontWeight:'400',color:'black'}}>Lawyer name</Text>
+              <Text style={{fontSize:20,fontWeight:'400',color:'black'}}>{lawyer.firstName} {lawyer.lastName}</Text>
               
             </View>
             <Text style={{alignSelf:'center',fontSize:12}}>Lawyer</Text>
@@ -179,15 +153,30 @@ const LawyerProfile = () => {
     
                   {/* Contact Button */}
                   <View style={{flexDirection:'row',justifyContent:'space-between',width:'100%',marginBottom:20,marginTop:80}}>
-                    <TouchableOpacity style={{backgroundColor:'#8940FF',borderRadius:15,paddingVertical:12,paddingHorizontal:22,flexDirection:'row',justifyContent:'center'}}>
+                    <TouchableOpacity 
+                      style={{backgroundColor:'#8940FF',borderRadius:15,paddingVertical:12,paddingHorizontal:22,flexDirection:'row',justifyContent:'center'}}
+                      onPress={() => navigation.navigate('ChatWindow',{
+                        receiverName: lawyer.firstName+' '+lawyer.lastName,
+                        photo_url : userIcon,
+                        uid : lawyer.id
+                      })}
+                    >
                       <Image source={ProfileMesssageIcon} style={{marginRight:5,marginVertical:2,height:moderateScale(26),width:moderateScale(26)}}/>
                       <Text style={{color:'white',fontSize:17,fontWeight:'400'}}>Message</Text>
                     </TouchableOpacity>
     
-                    <TouchableOpacity style={{backgroundColor:'#8940FF',borderRadius:15,paddingVertical:12,paddingHorizontal:22,flexDirection:'row',justifyContent:'center'}}>
-                      <Image source={CallIcon} style={{marginRight:5,marginVertical:2,height:moderateScale(26),width:moderateScale(26)}}/>
-                      <Text style={{color:'white',fontSize:17,fontWeight:'400'}}>Call lawyer</Text>
-                    </TouchableOpacity>
+                    <ZegoSendCallInvitationButton 
+                      invitees = {[{userID :lawyer.id, userName : lawyer.firstName}]} 
+                      isVideoCall = {false}
+                      resourceID = {'voice_call'}
+                      text={'Call lawyer'}
+                      width={150}
+                      height={50}
+                      icon={CallIcon}
+                      borderRadius={15}
+                      backgroundColor={'#8940FF'}
+                      textColor={'white'}
+                    />
                   </View>
                   
                   

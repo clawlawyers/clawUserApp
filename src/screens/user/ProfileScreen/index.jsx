@@ -1,44 +1,48 @@
-import { View, Text, Image, ImageBackground, TouchableOpacity, ScrollView } from 'react-native'
-import React from 'react'
+import { View, Text, Image, ImageBackground, TouchableOpacity, ScrollView, TextInput } from 'react-native'
+import React, { useEffect } from 'react'
 import styles from '../../../styles'
 import Background from '../../../assets/background.jpg'
-import YellowStar from '../../../assets/YellowStar.png';
+import rightArrow from '../../../assets/rightArrow.png';
 import PieChart from 'react-native-pie-chart'
 // import Back from '../../../assets/back-icon.png'
 import UserIcon from '../../../assets/userIcon.png';
-import {useNavigation} from '@react-navigation/native';
-import BackIcon from '../../../assets/back-button.png'
+import {useNavigation, useIsFocused} from '@react-navigation/native';
+import { fetchData, removeData } from '../../../actions/async-storage';
+import auth from '@react-native-firebase/auth';
+import ZegoUIKitPrebuiltCallService from '@zegocloud/zego-uikit-prebuilt-call-rn'
 import { moderateScale } from '../../../styles/mixins'
-import {useSelector} from 'react-redux'
-const ProfileScreen = () => {
+import {useSelector, connect} from 'react-redux'
+import { getUserProfile } from '../../../actions/userProfile';
+const ProfileScreen = (props) => {
 
   const navigation = useNavigation();
   const fname = useSelector(state => state.variables.firstName)
   const lname = useSelector(state => state.variables.lastName)
   const photo_url = useSelector(state => state.variables.photo_url)
-    posts = [
-      {
-        title: 'Corporate restructure to protect profit from sale.',
-        time : 'Posted 22 hrs ago',
-        fees : '30000',
-        type : 'Lawyer',
-        experience : 'Experienced',
-        priceType : 'Fixed price',
-        description: 'Description: Protecting profits from business sales, Goal: to safeguard the profits arising from the sales of my digital marketing agen....Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-
-      },{
-        title: 'Corporate restructure to protect profit from sale.',
-        time : 'Posted 22 hrs ago',
-        fees : '30000',
-        type : 'Lawyer',
-        experience : 'Experienced',
-        priceType : 'Fixed price',
-        description: 'Description: Protecting profits from business sales, Goal: to safeguard the profits arising from the sales of my digital marketing agen....Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-
-      },
-    ]
+  const state = useSelector(state => state.variables)
+  console.log(state)
+  const isFocused = useIsFocused()
   
+  const onUserLogout = async () => {
+    return ZegoUIKitPrebuiltCallService.uninit()
+  }
 
+  const logout = () => {
+  
+    console.log(fetchData('userId'));
+    onUserLogout();
+    removeData('userId');
+    auth().signOut();
+    navigation.navigate('InitialLandingScreen');
+    console.log('logged out');
+    console.log(fetchData('userId'));
+  }
+
+   
+    useEffect(()=>{
+
+      props.getUserProfile()
+    },[isFocused])
   return (
     <ScrollView style={{backgroundColor:'white'}}>
     <View style={[styles.container,{backgroundColor: 'white',}]}>
@@ -47,15 +51,6 @@ const ProfileScreen = () => {
         resizeMode='cover'
         style={{justifyContent: 'flex-end', alignItems: 'center', height: moderateScale(220)}}
       >
-        <TouchableOpacity 
-            style={{alignSelf:'flex-start',top:moderateScale(-60),marginLeft:moderateScale(15)}}
-            onPress={() => navigation.navigate('LawyerListing')}
-            >
-                <Image 
-                source={BackIcon}
-                style={{height:moderateScale(50),width:moderateScale(50)}}
-                />
-            </TouchableOpacity> 
         <View style={{justifyContent: 'center', alignItems: 'center', height: moderateScale(140), width: moderateScale(140), borderRadius:moderateScale(70), backgroundColor: 'white',marginBottom: -50}}>
           <Image 
               source={UserIcon}
@@ -67,7 +62,8 @@ const ProfileScreen = () => {
       {/* name */}
       <View style={{paddingHorizontal:20,marginTop:10}}>
         <View style={[styles.alignViewCenter, styles.alignItemsCenter, {marginTop: 45, width: '100%', flexDirection:'column'}]}>
-          <Text style={{fontSize:moderateScale(30),fontWeight:'400',color:'black'}}>{fname == '' ? 'user': `${fname} ${lname}`}</Text>
+          <Text style={{fontSize:moderateScale(30),fontWeight:'400',color:'black'}}>{fname == '' || fname==undefined ? 'user': `${fname} ${lname}`}</Text>
+          {state.email == '' ? null: <Text style={{alignSelf:'center',fontSize:12,marginBottom:moderateScale(8)}}>{state.email}</Text>}
           <TouchableOpacity
                 style={{
                     
@@ -91,7 +87,37 @@ const ProfileScreen = () => {
             </TouchableOpacity>
            
         </View>   
-        <View style={{borderBottomWidth:1.5,borderColor:'black',paddingVertical:4,marginTop:20}}>
+        
+        {/* ------------------------ New Design ------------------------ */}
+
+        <View>
+          <Text>Address</Text>
+          <View style={{color: 'black', borderWidth:1, borderRadius:10, borderColor:'#8940FF40', marginTop:5,justifyContent:'center',paddingHorizontal:moderateScale(15),paddingVertical:moderateScale(15)}}>
+            <Text style={{fontSize:14}} > {state.address == ''? '---' : state.address} </Text>
+          </View>
+
+          <View style={{marginTop:moderateScale(14)}}>
+            <TouchableOpacity 
+              style={{color: 'black', borderRadius:10, backgroundColor:'#8940FF', marginTop:5,justifyContent:'center',paddingHorizontal:moderateScale(15),paddingVertical:moderateScale(15),justifyContent:'space-between',flexDirection:'row'}}
+              onPress={() => navigation.navigate('ProfileSettings')}
+            >
+              <Text style={{fontSize:14,color:'white',fontWeight:'bold'}} >Profile settings</Text>
+              <Image source={rightArrow}/>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={{color: 'black', borderRadius:10, backgroundColor:'#8940FF', marginTop:5,justifyContent:'center',paddingHorizontal:moderateScale(15),paddingVertical:moderateScale(15),justifyContent:'space-between',flexDirection:'row'}}
+              onPress={logout}
+            >
+              <Text style={{fontSize:14,color:'white',fontWeight:'bold'}} >Log out</Text>
+            </TouchableOpacity>
+          </View>
+          
+
+        </View>
+
+        {/* ------------------------Initial design with user posts------------------------ */}
+        {/* <View style={{borderBottomWidth:1.5,borderColor:'black',paddingVertical:4,marginTop:20}}>
           <Text style={{color:'black',fontWeight:'500'}}>Sign out</Text>
         </View> 
 
@@ -145,7 +171,7 @@ const ProfileScreen = () => {
             </TouchableOpacity>
         </View>
         )
-      })}   
+      })}    */}
       </View>
 
       
@@ -155,4 +181,7 @@ const ProfileScreen = () => {
   )
 }
 
-export default ProfileScreen
+export default connect(null,{
+
+  getUserProfile
+})(ProfileScreen)

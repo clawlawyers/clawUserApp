@@ -5,7 +5,7 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import Onboarding from '../user/Onboarding';
 import NewsScreen from '../user/NewsScreen';
-// import LegalGPTScreen from '../user/LegalGPTScreen';
+import LinearGradient from 'react-native-linear-gradient'
 import LegalGPTScreen from '../user/LegalGPTScreen';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
  import { createDrawerNavigator } from '@react-navigation/drawer';
@@ -18,23 +18,26 @@ import CallSelected from '../../assets/CallSelected.png'
 import ProfileUnSelected from '../../assets/profile-icon-unselected.png'
 import ProfileSelected from '../../assets/profile-icon-selected.png'
 import SignupUser from '../AuthFlow/SignupUser';
-import UserOnboarding from '../user/Onboarding';
 import AuthFlow from '../AuthFlow/AuthFlow';
 import styles from '../../styles';
 import MessageScreen from '../user/MessageScreen';
 import ChatWindow from '../user/MessageScreen/ChatWindow';
 import ProfileScreen from '../user/ProfileScreen';
 import NewsDetail from '../user/NewsScreen/NewsDetail';
-import CallLogScreen from '../user/CallLog';
 import ContactList from '../user/Onboarding/ContactList';
 import InitialLandingScreen from './InitialLandingScreen';
 import AddGigsScreen from '../user/AddGigsScreen';
 import ExpandedNewsScreen from '../ExpandedNewsScreen';
+import SearchResultScreen from '../user/SearchScreen';
 import EditProfile from '../user/ProfileScreen/EditProfile';
 import CustomDrawer from '../../components/CustonDrawer';
 import LawerListing from '../user/LawyerListingScreen';
 import LawyerProfile from '../user/LawyerListingScreen/LawyerProfile';
 import PostDetail from '../user/ProfileScreen/PostDetail';
+import ProfileSettings from '../user/ProfileScreen/ProfileSettings';
+import ZegoUIKitPrebuiltCallService, {
+  ZegoCallInvitationDialog, ZegoUIKitPrebuiltCallWaitingScreen, ZegoUIKitPrebuiltCallInCallScreen, ZegoSendCallInvitationButton,
+} from '@zegocloud/zego-uikit-prebuilt-call-rn';
 const UserCall = createNativeStackNavigator();
 const Root = createNativeStackNavigator();
 const Stack = createNativeStackNavigator();
@@ -45,27 +48,27 @@ const UserNews = createNativeStackNavigator();
 const AppStack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 
-function USerCallLog(){
-  return(
-    <UserCall.Navigator initialRouteName='UserOnboarding' screenOptions={{headerShown: false}}>
-      <UserCall.Screen
-        component={UserOnboarding} name="UserOnboarding" 
-      />
-      <UserCall.Screen
-        component={CallLogScreen} name="UserCallLogScreen" 
-      />
-    </UserCall.Navigator>
-  )
-}
+// function USerCallLog(){
+//   return(
+//     <UserCall.Navigator initialRouteName='UserOnboarding' screenOptions={{headerShown: false}}>
+//       <UserCall.Screen
+//         component={UserOnboarding} name="UserOnboarding" 
+//       />
+//       <UserCall.Screen
+//         component={CallLogScreen} name="UserCallLogScreen" 
+//       />
+//     </UserCall.Navigator>
+//   )
+// }
 
-function UserNewsFlow(){
-  return(
-    <UserNews.Navigator screenOptions={{headerShown: false}}>
-        <UserNews.Screen component={UserOnboarding} name="UserOnboarding"/>
-        <UserNews.Screen component={NewsScreen} name="NewsScreen" />
-    </UserNews.Navigator>
-  )
-}
+// function UserNewsFlow(){
+//   return(
+//     <UserNews.Navigator screenOptions={{headerShown: false}}>
+//         <UserNews.Screen component={UserOnboarding} name="UserOnboarding"/>
+//         <UserNews.Screen component={NewsScreen} name="NewsScreen" />
+//     </UserNews.Navigator>
+//   )
+// }
 
 // Client App flow
 
@@ -83,7 +86,16 @@ function ClientTabNavigator  () {
             backgroundColor: '#8940FF',
             borderTopWidth: 0,
           },
-          
+
+          tabBarBackground: () => (
+            <View style={{ flex: 1 }}>
+              <LinearGradient
+                colors={['#8940FF', '#5B10D6']}
+                style={{ flex:1 }}
+              />
+            </View>
+          ),
+
           tabBarIcon: ({focused}) =>{
             return(
               focused ? (<Image 
@@ -217,7 +229,10 @@ function ClientTabNavigator  () {
 function UserFlow(){
   
   return(
-    <Drawer.Navigator screenOptions={{headerShown:false}} drawerContent={(props) => <CustomDrawer {...props}/>}>
+    <Drawer.Navigator screenOptions={{
+      drawerStyle: {
+        width: 250,
+      },headerShown:false}} drawerContent={(props) => <CustomDrawer {...props}/>}>
      <Drawer.Screen 
         component={ClientTabNavigator} name="Home" options={{headerShown:false}}/>
         <Drawer.Screen component={LegalGPTScreen} name='Legal GPT' options={{headerShown:false}}/>
@@ -226,6 +241,8 @@ function UserFlow(){
         <Drawer.Screen component={AddGigsScreen} name='AddGigsScreen' />
         <Drawer.Screen component={PostDetail} name='PostDetail' />
         <Drawer.Screen component={ChatWindow} name='ChatWindow' options={{headerShown:false}}/>
+        <Drawer.Screen component={SearchResultScreen} name='SearchResultScreen' options={{headerShown: false}} />
+        <Drawer.Screen component={ProfileSettings} name='ProfileSettings' options={{headerShown: false}} />
     </Drawer.Navigator>
     
   )
@@ -237,12 +254,27 @@ function NewsFlow(){
   return(
     <News.Navigator initialRouteName='OnboardingSnippet' screenOptions={{headerShown: false}}>
       <News.Screen component={Onboarding} name="OnboardingSnippet" />
+      
       <News.Screen component={NewsScreen} name="NewsScreen" />
       <News.Screen component={LawerListing} name="LawyerListing" />
       <News.Screen component={LawyerProfile} name='LawyerProfile' />
       <News.Screen component={MessageScreen}
       name='MessageScreen' />
+       <News.Screen component={ContactList} name="ContactList" />
+      <News.Screen
+      options={{ headerShown: false }}
+      // DO NOT change the name 
+      name="ZegoUIKitPrebuiltCallWaitingScreen"
+      component={ZegoUIKitPrebuiltCallWaitingScreen}
+      />
+      <News.Screen
+          options={{ headerShown: false }}
+          // DO NOT change the name
+          name="ZegoUIKitPrebuiltCallInCallScreen"
+          component={ZegoUIKitPrebuiltCallInCallScreen}
+      />  
       <News.Screen component={NewsDetail} name='NewsDetail' />
+     
     </News.Navigator>
 )}
 
@@ -253,7 +285,7 @@ function SignupFlow  ()  {
     <Stack.Navigator screenOptions={{headerShown:false}}>
       <Stack.Screen component={AuthFlow} name="Auth" />   
       <Stack.Screen component={SignupUser} name="SignupUser"/>
-      <AppStack.Screen component={UserFlow} name= "UserFlow" />
+      <Stack.Screen component={UserFlow} name= "UserFlow" />
       
     </Stack.Navigator>
   )
@@ -268,16 +300,17 @@ function AppFlow () {
       <AppStack.Screen  component={InitialLandingScreen} name='InitialLandingScreen'/>
       <AppStack.Screen component={SignupFlow} name='SignupFlow' />
       <AppStack.Screen component={UserFlow} name='UserFlow' />
-
     </AppStack.Navigator>
   )
 }
 function Base() {
     return (
        <NavigationContainer>
+          <ZegoCallInvitationDialog />
          <Root.Navigator screenOptions={{ headerShown: false }}>
           <Root.Screen component={AppFlow} name="AppFlow" />
          {/* <Root.Screen component={ExpandedNewsScreen} name="ExpandedNewsScreen" /> */}
+        
          </Root.Navigator>
        </NavigationContainer>
     );

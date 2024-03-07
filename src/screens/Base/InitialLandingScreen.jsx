@@ -1,8 +1,7 @@
-import { View, Text, Image } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { View, Image } from 'react-native'
+import React, { useEffect } from 'react'
 import {useNavigation, useIsFocused} from '@react-navigation/native'
-import { fetchData } from '../../actions/async-storage'
-import {registerUser, LocalSignIn } from '../../actions/authentication'
+import {LocalSignIn } from '../../actions/authentication'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {connect} from 'react-redux';
 const InitialLandingScreen =(props) => {
@@ -12,9 +11,6 @@ const InitialLandingScreen =(props) => {
 // console.log(props);
     const getActiveUser =async() => {
 
-    //     console.log('isnide get');
-    //     console.log(LocalSignIn)
-    //   LocalSignIn(navigation);
         const userId = await AsyncStorage.getItem('userId');
         if(userId){
             props.LocalSignIn(userId,navigation);

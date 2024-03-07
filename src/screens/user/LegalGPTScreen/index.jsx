@@ -1,33 +1,14 @@
-import { View, Text, ScrollView, Touchable, TouchableOpacity,Image, FlatList, TextInput } from 'react-native'
+import { View, Text, ScrollView, TouchableOpacity,Image, FlatList, TextInput } from 'react-native'
 import React, {useState, useEffect} from 'react'
-import NewsItem from '../../../components/NewsItem';
-import data from '../../../data/dummy'
 import styles from '../../../styles';
-import Back from '../../../assets/back-icon.png'
 import { useNavigation } from '@react-navigation/native';
-import CLAW from '../../../assets/app-icon.png'
+
 import {moderateScale, verticalScale } from '../../../styles/mixins';
 import BackIcon from '../../../assets/back-button.png'
 import GPTSendIcon from '../../../assets/GPTSendIcon.png';
 const LegalGPTScreen = ({isUser}) => {
     const [apiData,setApiData] = useState([]);
     const navigation = useNavigation();
-
-    // const baseUrl = 'https://inshortsapi.vercel.app/news?category=business';
-    //   try {
-    //     fetch(baseUrl)
-    //       .then(response => response.json())
-    //       .then(responseJson => {
-            
-    //         setApiData(responseJson);
-    //         // console.log(responseJson)
-    //       });
-    //   } catch (err) {
-    //     console.log('err', err);
-    //   }
-    // //   setApiData(apiData.data)
-    // //   console.log(apiData)
-   
 
   return (
     <View style={[styles.alignItemsCenter, styles.alignViewCenter,{paddingHorizontal:20,paddingTop:20,backgroundColor:'white',flex:1}]}>

@@ -18,31 +18,29 @@ const getUserProfileHelper = async({dispatch}) =>{
     };
 
     try{
-        //console.log('insid try')
+        
         const response = await fetch("https://claw-backend.onrender.com/api/v1/client/auth/me", requestOptions)
-
-       // console.log(response)
         const responseJSON = await response.json();
 
-        //console.log('responseJson',responseJSON)
+        console.log('responseJson',responseJSON)
         const lawyerData = responseJSON.data;
         dispatch(changeVariable('firstName',lawyerData.firstName));
         dispatch(changeVariable('lastName',lawyerData.lastName));
         dispatch(changeVariable('email',lawyerData.email));
-        fetch(lawyerData.profilePicture)
-        .then(response => response.blob())
-        .then(blob => {
-            // Convert the blob to a data URL
-            const reader = new FileReader();
-            reader.onload = () => {
-            // console.log(reader.result);
-            dispatch(changeVariable('photo_url',reader.result));
-            };
-            reader.readAsDataURL(blob);
-        })
-        .catch(error => {
-            console.error('Error fetching image:', error);
-        });
+        // fetch(lawyerData.profilePicture)
+        // .then(response => response.blob())
+        // .then(blob => {
+        //     // Convert the blob to a data URL
+        //     const reader = new FileReader();
+        //     reader.onload = () => {
+        //     // console.log(reader.result);
+        //     dispatch(changeVariable('photo_url',reader.result));
+        //     };
+        //     reader.readAsDataURL(blob);
+        // })
+        // .catch(error => {
+        //     console.error('Error fetching image:', error);
+        // });
        
         dispatch(changeVariable('state',lawyerData.state));
         dispatch(changeVariable('gender',lawyerData.gender));
@@ -75,7 +73,7 @@ const updateUserProfileHelper = async({data, navigation, dispatch}) => {
     }
 
     if(data.email ==''){
-        formdata.append('')
+        formdata.append('email','')
     }else{
         formdata.append('email',data.email);
     }
@@ -104,33 +102,18 @@ const updateUserProfileHelper = async({data, navigation, dispatch}) => {
     redirect: "follow"
     };
     console.log(formdata)
-//    try{ 
-//         const res = await fetch("https://claw-backend.onrender.com/api/v1/client/", requestOptions)
-       
-//         const responseJson = await res.json();
-//         console.log('response json',responseJson.json())
-//         if(responseJson.success){
 
-//             ToastAndroid.show('Profile updated successfully!', ToastAndroid.SHORT);
-//             navigation.navigate('ProfileScreen');
-
-//         }else{
-
-//             console.log(responseJson);
-//             ToastAndroid.show('Something went wrong!',ToastAndroid.SHORT);
-//         }
-
-//     }catch(err){
-//             console.log('error while updating profile ',err)
-//             ToastAndroid.show('Something went wrong!',ToastAndroid.SHORT);
-//         }
-    // .then((response) => response.text())
-    // .then((result) => console.log(result))
-    // .catch((error) => console.error(error));
     await fetch("https://claw-backend.onrender.com/api/v1/client/", requestOptions)
     .then((response) => response.text())
-    .then((result) => console.log('result',result))
-    .catch((error) => console.error('error',error));
+    .then((result) => {
+        console.log('result',result)
+        ToastAndroid.show('Profile updated successfully!',ToastAndroid.SHORT);
+        navigation.navigate('ProfileScreen');
+    })
+    .catch((error) => {
+        console.error('error',error)
+        ToastAndroid.show('Something went wrong.',ToastAndroid.SHORT);
+    });
 }
 
 export const updateUserProfile = (data, navigation) => dispatch => {

@@ -1,6 +1,7 @@
 import { View, Text, Image } from 'react-native'
 import React from 'react'
 import RatingStar from '../assets/RatingStar.png'
+import { moderateScale } from '../styles/mixins'
 export default function RatingDetailComponent({ratings}) {
   return (
     <View style={{width:'100%'}}>
@@ -22,11 +23,11 @@ export default function RatingDetailComponent({ratings}) {
                 })}
             
             </View>
-            <View style={{justifyContent:'space-between',paddingVertical:5}}>
+            <View style={{justifyContent:'space-between',paddingVertical:5,marginLeft:moderateScale(25)}}>
                 <View style={{alignItems:'flex-start'}}>
                     <View style={{flexDirection:'row',flex:1,justifyContent:'center',marginBottom:5}}>
                         <Text style={{color:'black',fontSize:25}}>4.5 </Text>
-                        <Image source={RatingStar} style={{marginVertical:8}}/>
+                        <Image source={RatingStar} style={{marginVertical:8,height:20,width:20}}/>
                     </View>
                     <Text style={{color:'#00000061'}}>
                         273 Reviews
@@ -36,7 +37,7 @@ export default function RatingDetailComponent({ratings}) {
                 <View style={{alignItems:'flex-start'}}>
                     <View style={{flexDirection:'row',flex:1,justifyContent:'center',marginBottom:5}}>
                         <Text style={{color:'black',fontSize:25}}>88%</Text>
-                        <Image source={RatingStar} style={{marginVertical:8}}/>
+                        
                     </View>
                     <Text style={{color:'#00000061'}}>
                         Recommended

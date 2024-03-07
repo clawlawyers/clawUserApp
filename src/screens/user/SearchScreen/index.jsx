@@ -5,27 +5,28 @@ import BackIcon from '../../../assets/back-button.png'
 import styles from '../../../styles'
 import { moderateScale } from '../../../styles/mixins'
 import Search from '../../../assets/search-icon.png'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation,useIsFocused } from '@react-navigation/native'
 import { ScrollView } from 'react-native-gesture-handler'
-
+import userIcon from '../../../assets/userIcon.png';
 const SearchResultScreen = (props) => {
 
     const {searchString} = props.route.params;
-    console.log('searchString : ',searchString)
+    //console.log('searchString : ',searchString)
+    let searchstr = searchString;
     const [_searchString, _setSearchString] = useState('');
     const [_ResultList, _setResultList] = useState([]);
     const navigation = useNavigation();
-
-    const getSearchResults =  async(searchString) => {
+    const isFocused = useIsFocused()
+    const getSearchResults =  async(_searchString) => {
 
         const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     
     const raw = JSON.stringify({
       // "search_line": "i got allergy from a product which was labeled safe"
-      "search_line": searchString
+      "search_line": _searchString
     });
-    
+    console.log(raw)
     const requestOptions = {
       method: "POST",
       headers: myHeaders,
@@ -37,7 +38,7 @@ const SearchResultScreen = (props) => {
   {  
     const res = await fetch("https://gpt.clawlaw.in/api/v1/search", requestOptions)
     const responseJson = await res.json();
-    console.log(' response fetchedddd',responseJson);
+    //console.log(' response fetchedddd',responseJson);
 
     let responseList = []
     responseJson.map((item) => {
@@ -56,14 +57,17 @@ const SearchResultScreen = (props) => {
 
     useEffect(()=>{
 
-       const subscriber = getSearchResults(searchString);
+      if(searchstr!='')
+       {
+        const subscriber = getSearchResults(searchstr);
+      }
+      _setSearchString('')
+      //  return subscriber;
+    },[isFocused])
 
-       return subscriber;;
-    },[])
-
-    console.log('result lists : ',typeof _ResultList)
+  //  console.log('result lists : ', _ResultList)
   return (
-    <View style={{paddingHorizontal:moderateScale(20),paddingTop:moderateScale(20)}}>
+    <View style={{paddingHorizontal:moderateScale(20),paddingTop:moderateScale(20),paddingBottom:moderateScale(60)}}>
       <View style={{flexDirection:'row',}}>
         <TouchableOpacity 
           style={[styles.alignItemsLeft, styles.alignViewCenter,]}
@@ -71,10 +75,10 @@ const SearchResultScreen = (props) => {
         >
           <Image 
             source={BackIcon}
-            style={{height:moderateScale(50),width:moderateScale(50)}}
+            style={{height:moderateScale(30),width:moderateScale(30)}}
           />
         </TouchableOpacity>
-        {/* <View style={[localStyles.searchBar,{flexDirection:'row'}]}>
+        <View style={[localStyles.searchBar,{flexDirection:'row'}]}>
           <TouchableOpacity >
             <Image 
               source={Search}
@@ -86,20 +90,28 @@ const SearchResultScreen = (props) => {
                 placeholderTextColor='#999999'
                 style={[ styles.font_19, styles.textBlack, {marginLeft:4,marginBottom:moderateScale(-2),width:'80%'}]}
                 value={_searchString}
-                onChangeText={(search) => _setSearchString(search)}
-                onEndEditing={(_searchString) => getSearchResults(_searchString)}
+                onChangeText={(search) => {_setSearchString(search);  getSearchResults(_searchString);}}
+                onEndEditing={(_searchString) =>{ getSearchResults(_searchString); searchstr=''}}
               />
                   
-        </View> */}
+        </View>
       </View>
       
       <ScrollView style={{marginTop:moderateScale(10)}}>
        {_ResultList.length>0? <View>{_ResultList.map((item) =>{
         return(
-          <View style={{borderWidth:1, paddingVertical:moderateScale(10),paddingHorizontal:moderateScale(15),borderRadius:10,marginVertical:moderateScale(8)}}>
-          <View><Text style={{color:'black'}}>{item.firstName} {item.lastName}</Text></View>
-          <Text style={{color:'grey'}}>{item.state} </Text>
-          </View>
+          <TouchableOpacity 
+            style={{borderWidth:1,borderColor:'#00000010', paddingVertical:moderateScale(10),paddingHorizontal:moderateScale(15),borderRadius:10,marginVertical:moderateScale(8), flexDirection:'row'}}
+            onPress={() => navigation.navigate('LawyerProfile',{lawyer : item})}
+            key={item.id}
+          >
+            <Image source={userIcon} style={{height:moderateScale(80),width:moderateScale(80)}}/>
+            <View style={{marginLeft:moderateScale(10)}}>
+              <View><Text style={{color:'black'}}>{item.firstName} {item.lastName}</Text></View>
+              <Text style={{color:'grey'}}>{item.state} </Text>
+            </View>
+            
+          </TouchableOpacity>
         )
        })}</View>: null}
       </ScrollView>
@@ -118,7 +130,8 @@ const localStyles = StyleSheet.create({
     borderRadius: moderateScale(10),
     height: moderateScale(45),
     marginBottom: moderateScale(10),
-    marginLeft:moderateScale(20)
+    marginLeft:moderateScale(20),
+    marginTop:moderateScale(10)
   }
 })
 export default connect(null,{

@@ -4,44 +4,44 @@ import {useSelector } from 'react-redux'
 import Search from '../../../assets/search-icon.png'
 import styles from '../../../styles'
 import { moderateScale } from '../../../styles/mixins'
-import ProfileIcon from '../../../assets/stock-photo.png';
+import userIcon from '../../../assets/userIcon.png';
 import {useNavigation, useIsFocused} from '@react-navigation/native'
+import firestore from '@react-native-firebase/firestore';
 
 const MessageScreen = () => {
   const navigation = useNavigation();
-
   const [chatMembers, setChatMembers] = useState([]);
   const isFocused = useIsFocused()
   const uid = useSelector(state => state.variables.uid);
   console.log('message screen :',uid)
-  const getUsers = async() => {
+  const getFirebaseChats = async() => {
+   
+ 
+  const chats = await firestore().collection("chats")
+  .orderBy("latestTimeStamp", "desc").get()
+  .then(querySnapshot => {
+    console.log('Total users: ', querySnapshot.size);
+    const members = []
+    querySnapshot.forEach(documentSnapshot => {
+      console.log('User ID: ', documentSnapshot.id, documentSnapshot.data());
+      if(documentSnapshot.data().senderID == uid)
+      {
+        members.push(documentSnapshot.data());
+      }
+    });
+    console.log('memberssss',members)
+    setChatMembers(members);
+  });
 
-    const requestOptions = {
-      method: "GET",
-      redirect: "follow"
-    };
-  
-  let userList = [];  
-  const response = await fetch("https://claw-backend.onrender.com/api/v1/user/list", requestOptions)
-  const responseJson = await response.json();
-  
-  responseJson.data.map((item) => {
-
-    if(item._id !== uid)
-    if(item.firstName){
-      userList.push(item);
-    }
-  })
-
-  console.log('response',userList);
-    setChatMembers(userList);
-    console.log('chat members', chatMembers);
   }
 
+  
   useEffect(() => {
 
-    getUsers();
+    //getUsers();
+    getFirebaseChats();
 
+    //return subscriber;
   },[isFocused]);
   
 return (
@@ -61,7 +61,7 @@ return (
             <TextInput
                   placeholder='Search'
                   placeholderTextColor='#999999'
-                  style={[ styles.font_20,styles.marginL_10, styles.textBlack, { width: '90%',marginBottom:-2}]}
+                  style={[ styles.font_20,styles.marginL_10, styles.textBlack, { width: '90%',marginBottom:moderateScale(-6)}]}
             />
                 
         </View>
@@ -73,17 +73,21 @@ return (
                 key={item._id}
                 style={{flexDirection:'row',justifyContent:'flex-start',marginBottom:10}} 
                 onPress={()=> navigation.navigate('ChatWindow',{
-                    firstName: item.firstName,
-                    lastName : item.lastName,
-                    photo_url : ProfileIcon,
-                    uid : item._id
+                    receiverName: item.receiverName,
+                    // lastName : item.lastName,
+                    photo_url : userIcon,
+                    uid : item.receiverID
                 })}
               >
-                <Image source={ProfileIcon} style={{height:moderateScale(80),width:moderateScale(80)}}/>
+                <Image source={userIcon} style={{height:moderateScale(80),width:moderateScale(80)}}/>
                 
                 <View style={{justifyContent:'center',marginLeft:moderateScale(22)}}>
-                  <Text style={{fontSize:moderateScale(23),color:'black'}}>{item.firstName} {item.lastName}</Text><Text>{item.lastActive}</Text>
-                
+                  <Text style={{fontSize:moderateScale(23),color:'black'}}>{item.receiverName}</Text>
+                  {/* <Text>{item.lastActive}</Text> */}
+                  <Text>{item.latestMessage}</Text>
+                  <Text>
+                    {item.latestTimeStamp.toDate().getDate()}
+                  </Text>
                 </View>
                 
               </TouchableOpacity>

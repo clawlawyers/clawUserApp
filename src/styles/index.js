@@ -193,7 +193,7 @@ startLogo:{
 },
 loginButton:{
   height: moderateScale(58),
-  width: moderateScale(205),
+  width: moderateScale(175),
   backgroundColor: colors.primaryColor,
   borderRadius: moderateScale(15),
   marginTop: verticalScale(20)
@@ -309,8 +309,7 @@ adviceBox:{
   height: moderateScale(110),
   width: moderateScale(350),
   borderRadius: moderateScale(15),
-  backgroundColor: colors.primaryColor,
-  marginVertical: verticalScale(10),
+  marginVertical: verticalScale(12),
   padding: moderateScale(10)
 },
 newsBox:{
@@ -359,8 +358,8 @@ searchBar: {
   alignItems: 'center',
   width: moderateScale(380),
   backgroundColor: '#E4E3E3',
-  borderRadius: moderateScale(10),
-  height: moderateScale(45),
+  borderRadius: moderateScale(50),
+  height: moderateScale(40),
   marginBottom: moderateScale(10)
 },
 
@@ -384,10 +383,10 @@ callDirection:{
   color: '#8E8E93'
 },
 miniCallIcon:{
-  height: moderateScale(13.65),
-  width: moderateScale(14.2),
+  height: moderateScale(20),
+  width: moderateScale(20),
   resizeMode: 'contain',
-  marginRight: horizontalScale(10),
+  marginRight: horizontalScale(5),
 },
 detailsLogo:{
   height: moderateScale(22),

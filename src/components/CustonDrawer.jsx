@@ -1,30 +1,39 @@
 import React from 'react';
 import { useNavigation } from '@react-navigation/native'
 import Robot from '../assets/Robot.png';
-import MenuNewIcon from '../assets/MenuNewsIcon.png';
-import MenuCallIcon from '../assets/MenuCallIcon.png';
-import MenuProfileIcon from '../assets/MenuProfileIcon.png';
-import MenuLogoutIcon from '../assets/MenuLogoutIcon.png';
+import MenuArrowWhite from '../assets/MenuArrowWhite.png';
+import MenuNewsIcon from '../assets/news-icon-unselected.png';
+import MenuCallIcon from '../assets/CallUnselected.png';
+import MenuProfileIcon from '../assets/profile-icon-unselected.png';
+import MenuLogoutIcon from '../assets/MenuLogoutIcon-white.png';
+import LinearGradient from 'react-native-linear-gradient'
+import DrawerItem from './DrawerItem';
 import userIcon from '../assets/userIcon.png'
 import {useSelector} from 'react-redux';
 import {
     DrawerContentScrollView,
-    DrawerItem
   } from '@react-navigation/drawer';
-import { Image,View,Text } from 'react-native';
+import { Image,View,Text,Dimensions, TouchableOpacity } from 'react-native';
 import { StyleSheet } from 'react-native';
 import { fetchData, removeData } from '../actions/async-storage';
 import auth from '@react-native-firebase/auth';
 import { moderateScale } from '../styles/mixins';
-
+import ZegoUIKitPrebuiltCallService from '@zegocloud/zego-uikit-prebuilt-call-rn'
   function CustomDrawer(props) {
 
+    const windowHeight = Dimensions.get('window').height;
     const navigation = useNavigation();
     const fname = useSelector(state => state.variables.firstName);
     const lname = useSelector(state => state.variables.lastName)
+
+    const onUserLogout = async () => {
+      return ZegoUIKitPrebuiltCallService.uninit()
+    }
+
     const logout = () => {
     
       console.log(fetchData('userId'));
+      onUserLogout();
       removeData('userId');
       auth().signOut();
       navigation.navigate('InitialLandingScreen');
@@ -34,50 +43,37 @@ import { moderateScale } from '../styles/mixins';
 
     return (
       <DrawerContentScrollView {...props} 
-        style={{backgroundColor:'#bb91ff'}}
+        style={{}}
       >
-        <View style={{backgroundColor:'#8940ff',marginTop:-4,paddingVertical:20,paddingHorizontal:30}}>
+         <LinearGradient
+        colors={['#8940FF', '#3C0D89']}
+        start={{x: 0, y: 0}}
+        end={{x: 1, y: 1}}
+        style={{flex: 1,height:windowHeight,marginTop:moderateScale(-5)}}
+      > 
+        <View style={{marginTop:-4,paddingVertical:20,paddingHorizontal:30}}>
             <Image source={userIcon} style={{height:moderateScale(70),width:moderateScale(70),zIndex:1,position:'absolute',marginTop:moderateScale(50),marginLeft:moderateScale(30)}}/>
             {/* <Image source={{uri : imageUrl}} style={{height:moderateScale(70),width:moderateScale(70),zIndex:2,position:'absolute',marginTop:moderateScale(50),marginLeft:moderateScale(30)}}/> */}
-            <Text style={{color:'white', fontWeight:'bold',fontSize:19,marginTop:moderateScale(100)}}>{fname == '' ? 'user' :`${fname} ${lname}`}</Text>
+            <Text style={{color:'white', fontWeight:'bold',fontSize:19,marginTop:moderateScale(100)}}>{fname == '' || fname==undefined ? 'user' :`${fname} ${lname}`}</Text>
         </View>
-        <DrawerItem 
-            label='Legal GPT' 
-            onPress={() => navigation.navigate('Legal GPT')}
-            icon={() => <Image source={Robot}/>}
-            labelStyle={styles.labelStyle}
-            style={styles.drawerItemStyle}
-        />
-        <DrawerItem 
-            label='News' 
-            onPress={() => navigation.navigate('News')}
-            icon={() => <Image source={MenuNewIcon} style={styles.drawerIcon}/>}
-            labelStyle={styles.labelStyle}
-            style={styles.drawerItemStyle}
-            
-        />
-        <DrawerItem 
-            label='Calls' 
-            onPress={() => navigation.navigate('ContactList')}
-            icon={() => <Image source={MenuCallIcon} style={styles.drawerIcon}/>}
-            labelStyle={styles.labelStyle}
-            style={styles.drawerItemStyle}
-        />
-        <DrawerItem 
-            label='Account' 
-            onPress={() => navigation.navigate('EditProfile')}
-            icon={() => <Image source={MenuProfileIcon} style={styles.drawerIcon}/>}
-            labelStyle={styles.labelStyle}
-            style={styles.drawerItemStyle}
-            
-        />
-        <DrawerItem 
-            label='Log out' 
-            onPress={logout}
-            icon={() => <Image source={MenuLogoutIcon} style={styles.drawerIcon}/>}
-            labelStyle={styles.labelStyle}
-            style={styles.drawerItemStyle}
-        />
+        
+        <DrawerItem title='Legal GPT' icon={Robot} screen='Legal GPT'/>
+
+        <DrawerItem title='News' icon={MenuNewsIcon} screen='News'/>
+
+        <DrawerItem title='Calls' icon={MenuCallIcon} screen='ContactList'/>
+
+        <DrawerItem title='Account' icon={MenuProfileIcon} screen='EditProfile'/>
+
+        <TouchableOpacity 
+        style={styles.drawerItemStyle}
+        onPress={logout}
+        >
+          <Image source={MenuLogoutIcon} style={styles.drawerIcon}/>
+          <Text style={styles.labelStyle}>Log out</Text>
+          <Image source={MenuArrowWhite} style={styles.rightMenuIcon}/>
+        </TouchableOpacity>
+        </LinearGradient>
       </DrawerContentScrollView>
     );
   }
@@ -87,20 +83,31 @@ import { moderateScale } from '../styles/mixins';
   const styles = StyleSheet.create({
 
     labelStyle :{
-        fontWeight:'bold',
-        color:'black',
-        fontSize:17
-    },
-    drawerItemStyle:{
-        borderBottomWidth:1,
-        marginHorizontal:25,
-        paddingVertical:5
-    },
+      fontWeight:'500',
+      color:'white',
+      fontSize:15
+  },
+  drawerItemStyle:{
+      borderBottomWidth:1,
+      marginHorizontal:25,
+      borderColor:'#00000045',
+      flexDirection:'row',
+      paddingVertical:moderateScale(13),
+      alignItems:'center',
+      justifyContent:'space-between'
+     
+  },
 
-    drawerIcon:{
-      height:moderateScale(40),
-      width:moderateScale(40),
-      marginTop:moderateScale(5)
-    }
+  drawerIcon:{
+    height:moderateScale(30),
+    width:moderateScale(30),
+    marginTop:moderateScale(5)
+  },
+
+  rightMenuIcon :{
+    height:moderateScale(18),
+  }
+
+
 
   })

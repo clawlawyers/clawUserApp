@@ -1,15 +1,14 @@
-import { View, Text, Image,TextInput, TouchableOpacity, ToastAndroid } from 'react-native'
+import { View, Text, Image,TextInput, TouchableOpacity, ToastAndroid, StyleSheet } from 'react-native'
 import React, { useState,useEffect, useRef } from 'react'
 import styles from '../../styles'
-import BackIcon from '../../assets/back-button.png'
 import {moderateScale, verticalScale } from '../../styles/mixins'
-import { registerUser, validatePhoneNumber} from '../../actions/authentication'
+import {  validatePhoneNumber} from '../../actions/authentication'
 import { changeVariable } from '../../actions/variables'
 import {BarIndicator} from 'react-native-indicators';
 import { connect } from 'react-redux'
 import { useNavigation } from '@react-navigation/native'
 import auth from '@react-native-firebase/auth';
-
+import OTPGraphic from '../../assets/OTP-security.png';
 
 const SignupUser = (props) => {
 
@@ -18,7 +17,6 @@ const SignupUser = (props) => {
     const [confirm, setConfirm] = useState('');
     const navigation = useNavigation()   
     const [_otp,_setotp] = useState('');
-    //const [isDisabled, setIsDisabled] = (true);
     const [_OTPvisibility, setOTPvisibility] = useState(true);
     const [ isLoading, setIsLoading] = useState(false);
     const [_user, setUser] = useState();
@@ -40,21 +38,19 @@ const SignupUser = (props) => {
     function onAuthStateChanged(user) {
 
         console.log('inside onauthchanged')
-        //setUser(user);
-        //if (initializing) setInitializing(false);
         if (user) {
 
             _setTimer(0);
             setOTPvisibility(false);
 
             console.log('inside user');
-            //setOTPvisibility(false);
+            
             const data = {
                 phoneNumber: _phoneNumber,
                 verified: true
             }
              props.validatePhoneNumber(data,navigation)
-            navigation.navigate('UserFlow')
+            navigation.replace('UserFlow')
             setIsLoading(false);
         }
       }
@@ -100,8 +96,6 @@ const SignupUser = (props) => {
             setConfirm(res);
             console.log(res)
             setIsLoading(false);
-            //alert('otp sent');
-            //navigation.navigate('AppFlow',{screen:'OTPScreen'})
 
         }catch(err){
             
@@ -125,7 +119,7 @@ const SignupUser = (props) => {
             const res = await confirm.confirm(OTP);
             console.log(res);
            // alert('sign in successful!');
-            navigation.navigate('UserFlow')
+            navigation.replace('UserFlow')
             const data = {
                 phoneNumber: _phoneNumber,
                 verified: true
@@ -146,43 +140,26 @@ const SignupUser = (props) => {
     {
         
         return (
-            <View style={{backgroundColor:'white',flex:1,paddingHorizontal:moderateScale(30),paddingTop:moderateScale(20)}}>
-                <View style={[ ]}>
-                    <TouchableOpacity style={[styles.alignItemsLeft, styles.alignViewCenter, ]}
-                        onPress={() => navigation.navigate('Auth')}
-                    >
-                        <Image 
-                        source={BackIcon}
-                        style={{height:moderateScale(50),width:moderateScale(50)}}
-                        />
-                    </TouchableOpacity>
-                    
-                </View>
-              
+            <View style={localStyles.container}>            
                 
-                <View style={[styles.alignViewCenter, styles.alignItemsLeft, {width: '80%', marginTop: verticalScale(35)}]}>
-                    <Text style={[styles.textBlack, styles.font_50, styles.font_700]}>
-                        Hi!
-                    </Text>
-                    <Text style={[styles.font_22, styles.font_med, {color: '#5E5C5C'}]}>
-                        Create a new account to
-                    </Text>
-                    <Text style={[styles.font_22, styles.font_med, {color: '#8940FF'}]}>
-                        Hire a CA/Lawyer
+                <View style={[styles.alignViewCenter, styles.alignItemsLeft, {alignItems:'center', marginTop: verticalScale(35)}]}>
+                    <Text style={localStyles.heading}>
+                        Login/Create Account
                     </Text>
                 </View>
-        
-            
-                <View style={[styles.alignViewCenter, styles.alignItemsLeft, {width: '100%', marginTop: verticalScale(50), marginBottom: verticalScale(5)}]}>
-                <Text style={[styles.font_22, styles.font_med, {color: '#5E5C5C'}]}>
-                    Number
-                </Text>
-            </View>
+
+                <View style={[styles.alignViewCenter, styles.alignItemsLeft, localStyles.subHeadingContainer]}>
+                    <Text style={[styles.font_med, {color: '#5E5C5C',fontSize:moderateScale(22)}]}>
+                        Enter your phone number
+                    </Text>
+                </View>
             <View style={[styles.alignViewCenter, styles.alignItemsLeft, {width: '100%',flexDirection:'row',justifyContent:'space-between'}]}>
-                <TextInput value='+91' style={{borderColor:'rgba(137, 64, 255, 0.3)',borderWidth:1,borderRadius:10,width:'20%',height:45,textAlign:'center',fontSize:15,color:'black'}}/>
+
+                <TextInput value='+91' style={localStyles.pnoInput}/>
         
                 <TextInput 
-                    style={{borderColor:'rgba(137, 64, 255, 0.3)',borderWidth:1,borderRadius:10,height:45,width:'75%',textAlign:'center',fontSize:15,textAlign:'left',paddingLeft:15,color:'black'}} placeholder='Type in your phone number' 
+                    style={[localStyles.pnoInput,{width:'75%',textAlign:'flex-start',paddingHorizontal:15}]} 
+                    placeholder='Type in your phone number' 
                     value={_phoneNumber} onChangeText={(_phoneNumber) => _setphoneNumber(_phoneNumber)}
                     keyboardType='number-pad'
                     maxLength={10}
@@ -193,7 +170,7 @@ const SignupUser = (props) => {
                  style={[styles.loginButton, styles.alignViewCenter, styles.alignItemsCenter,{alignSelf:'center',marginTop:30}]}
                 onPress ={validatePhone}
             >
-               { !isLoading ?<Text style={[styles.font_25, styles.textWhite, styles.font_600]}>
+               { !isLoading ?<Text style={[styles.font_25, styles.textWhite, styles.font_600,{fontWeight:'400'}]}>
                  SIGN UP
                 </Text>:
                 < BarIndicator color='white' size={20}/>}
@@ -202,35 +179,32 @@ const SignupUser = (props) => {
           )
     }
 
-    return (
+    return (       
 
-       
-
-        <View style={{backgroundColor:'white',flex:1,paddingHorizontal:moderateScale(30),paddingTop:moderateScale(20)}}>
-        <View style={[ {width: '80%'}]}>
-            <TouchableOpacity style={[styles.alignItemsLeft, styles.alignViewCenter, {width: '100%'}]}
-                onPress={() => navigation.navigate('Auth')}
-            >
-                <Image 
-                source={BackIcon}
-                style={{height:moderateScale(50),width:moderateScale(50)}}
-                />
-            </TouchableOpacity>
+        <View style={localStyles.container}>
+        <View style={[ {alignItems:'center',paddingTop:moderateScale(24)}]}>
+            
+            <Image source={OTPGraphic} style={{height:moderateScale(140),width:moderateScale(200)}} />
             
         </View>
       
         
-        <View style={[styles.alignViewCenter, styles.alignItemsLeft, {width: '100%', marginTop: verticalScale(35)}]}>
-            <Text style={[styles.textBlack, styles.font_50, styles.font_700]}>
-            Enter OTP
+        <View style={[ {width: '100%', marginTop: verticalScale(15),alignItems:'center',flexDirection:'column'}]}>
+            
+            <Text style={[styles.textBlack, {fontWeight:'bold',fontSize:moderateScale(21)}]}>
+                Enter Verification Code
             </Text>
-            <Text style={[styles.font_22, styles.font_med, {color: '#5E5C5C'}]}>
-            6 digit code has been send to +91 {_phoneNumber}. <Text style={{textDecorationLine:'underline',color: '#8940FF',fontSize:15,fontWeight:'normal'}} onPress={() => setConfirm('')}>Edit</Text>
+
+            <Text style={[styles.font_22, styles.font_med, {color: '#5E5C5C',textAlign:'center'}]}>
+            6 digit code has been send to +91 {_phoneNumber}. 
+                <Text style={localStyles.links} onPress={() => setConfirm('')}>Edit</Text>
             </Text>
             
         </View>
 
-    {!_OTPvisibility ?<View style={[styles.alignViewCenter, styles.alignItemsLeft, {width: '100%',flexDirection:'row',marginTop: verticalScale(40),justifyContent:'space-between'}]}>< BarIndicator color='#D9D9D9' size={50}/></View>:<View style={[styles.alignViewCenter, styles.alignItemsLeft, {width: '100%',flexDirection:'row',marginTop: verticalScale(40),justifyContent:'space-between'}]}>
+    {!_OTPvisibility ?
+        <View style={[ localStyles.OTPContainer]}>< BarIndicator color='#D9D9D9' size={50}/></View> : 
+        <View style={[ localStyles.OTPContainer]}>
 
         <TextInput 
             value={pinTxt1}
@@ -347,22 +321,92 @@ const SignupUser = (props) => {
     </View>
    }
 
-    <Text style={_timer>0 ?{textDecorationLine:'underline',color: '#8940FF50',fontSize:15,alignSelf:'center',marginTop:10} :{textDecorationLine:'underline',color: '#8940FF',fontSize:15,alignSelf:'center',marginTop:10}} onPress={() => validatePhone()} disabled={_timer>0 || _OTPvisibility==false ? true:false}>Resend OTP { _timer?(_timer):null}</Text>
+    <Text 
+        style={_timer>0 ? localStyles.resendTextInactive :localStyles.resendText} 
+        onPress={() => validatePhone()} disabled={_timer>0 || _OTPvisibility==false ? true:false}>
+            Resend OTP { _timer?(_timer):null}
+    </Text>
     <TouchableOpacity 
-            style={[styles.loginButton, styles.alignViewCenter, styles.alignItemsCenter,{alignSelf:'center',marginTop:30}]}
-            onPress={handleOTP}
-        >
-            { !isLoading ?<Text style={[styles.font_25, styles.textWhite, styles.font_600]}>
-                    Next
-                    </Text>:
-                < BarIndicator color='white' size={20}/>}
-        </TouchableOpacity>
+        style={[styles.loginButton, styles.alignViewCenter, styles.alignItemsCenter,{alignSelf:'center',marginTop:15}]}
+        onPress={handleOTP}
+    >
+        { !isLoading ?
+        <Text style={[styles.font_25, styles.textWhite,]}>
+            Next
+        </Text>:
+        < BarIndicator color='white' size={20}/>}
+    </TouchableOpacity>
    
     
     </View>
 
     )
 }
+
+const localStyles = StyleSheet.create({
+
+    container:{
+        backgroundColor:'white',
+        flex:1,
+        paddingHorizontal:moderateScale(30),
+        paddingTop:moderateScale(20)
+    },
+
+    heading : {
+        color:'#8940FF',
+        fontSize:moderateScale(32),
+        fontWeight:'500',
+        letterSpacing:moderateScale(0)
+    },
+
+    subHeadingContainer :{
+        width: '100%', 
+        marginTop: verticalScale(56), 
+        marginBottom: verticalScale(15)
+    },
+
+    pnoInput : {
+        borderColor:'rgba(137, 64, 255, 0.3)',
+        borderWidth:1,
+        borderRadius:10,
+        width:'20%',
+        height:45,
+        textAlign:'center',
+        fontSize:15,
+        color:'black'
+    },
+
+    links : {
+        textDecorationLine:'underline',
+        color: '#8940FF',
+        fontSize:15,
+        fontWeight:'normal'
+    },
+
+    resendText : {
+        textDecorationLine:'underline',
+        color: '#8940FF',
+        fontSize:13,
+        alignSelf:'center',
+        marginTop:10
+    },
+
+    resendTextInactive : {
+        textDecorationLine:'underline',
+        color: '#8940FF50',
+        fontSize:15,
+        alignSelf:'center',
+        marginTop:10
+    },
+
+    OTPContainer :  {
+        width: '100%',
+        flexDirection:'row',
+        marginTop: verticalScale(30),
+        justifyContent:'space-between'
+    }
+
+})
 
 export default connect(null, {
     changeVariable,
