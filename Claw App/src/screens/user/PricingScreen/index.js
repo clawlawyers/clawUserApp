@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, StatusBar, Pressable, ScrollView, ImageBackground } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import {connect} from 'react-redux';
+import {connect, useSelector} from 'react-redux';
 import { moderateScale } from '../../../styles/mixins';
 import Ripple from 'react-native-material-ripple'
 import YearlyPricing from '../../../components/PricingComponents/YearlyPricing';
@@ -8,6 +8,8 @@ import tealBackground from '../../../assets/tealBackground.png';
 import MonthyPricing from '../../../components/PricingComponents/MonthyPricing';
 const PricingScreen = () => {
   
+    const paymentModalVisible = useSelector(state => state.variables.paymentModalVisible);
+    const paymentStatus = useSelector(state => state.variables.paymentStatus)
   return (
     <View style={localStyles.container}>
         <ScrollView showsVerticalScrollIndicator={false}>  
@@ -22,12 +24,12 @@ const PricingScreen = () => {
             <YearlyPricing/>
 
             {/* Enterprise */}
-            <View style={{alignItems:'center',backgroundColor:'#ffffff',borderRadius:15,marginTop:moderateScale(29),marginBottom:moderateScale(39)}}>
-                <Text style={{color:'#008080',fontSize:moderateScale(45),fontWeight:'bold',marginTop:moderateScale(10)}}>Enterprise</Text>
+            <View style={localStyles.enterpriseContainer}>
+                <Text style={localStyles.enterpriseTitle}>Enterprise</Text>
 
-                <ImageBackground source={tealBackground} style={{backgroundColor:'#008080',borderRadius:10,overflow:'hidden',marginTop:moderateScale(35),marginBottom:moderateScale(39)}}>
+                <ImageBackground source={tealBackground} style={localStyles.btnContainer}>
                     <Ripple style={{paddingHorizontal:moderateScale(44),}} rippleColor='white'>
-                        <Text style={{color:'white',fontSize:moderateScale(22),fontWeight:'500',marginVertical:moderateScale(16)}}>Contact us</Text>
+                        <Text style={localStyles.btnText}>Contact us</Text>
                     </Ripple>
                 </ImageBackground>
             </View>
@@ -59,7 +61,32 @@ const localStyles = StyleSheet.create({
         textAlign:'center',
         marginTop:moderateScale(6)
     },
-  
+    enterpriseContainer: {
+        alignItems:'center',
+        backgroundColor:'#ffffff',
+        borderRadius:15,
+        marginTop:moderateScale(29),
+        marginBottom:moderateScale(39)
+    },
+    enterpriseTitle: {
+        color:'#008080',
+        fontSize:moderateScale(45),
+        fontWeight:'bold',
+        marginTop:moderateScale(10)
+    },
+    btnContainer: {
+        backgroundColor:'#008080',
+        borderRadius:10,
+        overflow:'hidden',
+        marginTop:moderateScale(35),
+        marginBottom:moderateScale(39)
+    },
+    btnText:{
+        color:'white',
+        fontSize:moderateScale(22),
+        fontWeight:'500',
+        marginVertical:moderateScale(16)
+    }
 })
 export default connect(null,{
 

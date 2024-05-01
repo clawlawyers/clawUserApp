@@ -15,10 +15,12 @@ const TokenComponent = (props) => {
     const navigation = useNavigation();
     const botLoader = useSelector(state => state.variables.botLoader);
     const jwtToken = useSelector(state => state.variables.jwtToken);
+    const phone_no = useSelector(state => state.variables.phone_no);
     const gptTokens = useSelector(state => state.variables.gptTokens);
-    const {plan, token_used, tokens_withoutAds, tokens_withAds} = gptTokens;
+    const {plan, token_used} = gptTokens;
+    const planCategory = plan.split('_');
     console.log('gptTokens',gptTokens);
-    console.log(jwtToken,plan, token_used, tokens_withoutAds, tokens_withAds);
+    console.log(jwtToken,plan, token_used,phone_no, planCategory);
     
     useEffect(() => {
         props.getTokens()
@@ -42,7 +44,7 @@ const TokenComponent = (props) => {
             <View>
             
                 <View style={{flexDirection:'row'}}>
-                    <View style={{height:moderateScale(40),width:moderateScale(40),backgroundColor:'#008080',borderRadius:20,alignItems:'center',justifyContent:'center'}}>
+                    <View style={localStyles.userIcon}>
                         <Image source={userStarIcon} style={{width:moderateScale(16),height:moderateScale(16)}}/>
                     </View>
                     {jwtToken == '' ? 
@@ -53,34 +55,18 @@ const TokenComponent = (props) => {
                     </View>
                     :
                     <View style={{marginLeft:10}}>
-                        <Text style={{color:'white',fontSize:16}}>Guest</Text>
-                        <Text style={{color:'#e5e5e540'}}>Free account</Text>
+                        <Text style={{color:'white',fontSize:16}}>+91 {phone_no}</Text>
+                        <Text style={{color:'#e5e5e540'}}>Plan - {planCategory[0]}</Text>
                         <View style={{flexDirection:'row',marginTop:moderateScale(9),}}>
-                            <Image source={tokenIcon} style={{height:moderateScale(20),width:moderateScale(20),marginRight:moderateScale(5)}}/>
-                            <Text style={{color:'white'}}>{token_used}/100</Text>
+                            <Image source={tokenIcon} style={localStyles.tokenIcon}/>
+                            <Text style={{color:'white'}}>{token_used}/{planCategory[1]}</Text>
                         </View>
                     </View>
                    }
 
                 </View>
             </View> 
-            {/* <LinearGradient
-                colors={['#008080', '#006666']}
-                style={localStyles.newChatbtn}
-                
-                > */}
-                    <ImageBackground source={tealBackground} resizeMode='cover' style={localStyles.newChatbtn}>
-                    <Ripple 
-                    style={localStyles.newChatRipple}
-                    onPress={() => navigation.navigate('WebScreen')} 
-                    rippleColor='white'
-                    rippleDuration={1000}
-                    rippleSize={1000}
-                    >
-                    <Text style={{color:'white',fontSize:16}}>Watch ad</Text>
-                    </Ripple>
-                    </ImageBackground>
-                {/* </LinearGradient> */}
+           
         </View>
 
     );
@@ -122,6 +108,19 @@ const localStyles = StyleSheet.create({
         color:'grey',
         marginVertical: moderateScale(3),
         fontSize:moderateScale(18)
+    },
+    userIcon: {
+        height:moderateScale(40),
+        width:moderateScale(40),
+        backgroundColor:'#008080',
+        borderRadius:20,
+        alignItems:'center',
+        justifyContent:'center'
+    },
+    tokenIcon: {
+        height:moderateScale(20),
+        width:moderateScale(20),
+        marginRight:moderateScale(5)
     }
 
 })

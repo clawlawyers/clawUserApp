@@ -35,5 +35,8 @@ export const CODE_GENERATE_URL = "https://claw-backend.onrender.com/api/v1/gpt/r
 export const NEWS_URL = "https://claw-backend.onrender.com/api/v1/news";
 
 // PAYMENT ENDPOINTS
-export const PAYMENT_INTENT_URL = "https://claw-backend.onrender.com/api/v1/stripe/create-payment-intent";
+export const CREATE_PAYMENT_DEV = "https://claw-app-dev.onrender.com/api/v1/payment/create-payment-order";
+export const CREATE_PAYMENT_PROD = "https://claw-backend.onrender.com/api/v1/payment/create-payment-order";
+
 export const PUBLISHABLE_KEY ="pk_test_51P0LtFSA4IzTuBkCjkRkujJAnG6HmdiJX6We0G9502KzaY9uPtnabMOgW21vPM0FdboI9qvaCfJb1i53y3xS3iA400kApsBbxo";
+

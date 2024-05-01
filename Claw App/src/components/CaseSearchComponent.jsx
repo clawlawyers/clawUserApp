@@ -64,24 +64,16 @@ const [searchBtnBorder, setSearchBtnBorder] = useState(1);
   }, []);
 
     return (
-        // <View >
-
-          
-        //     <TouchableOpacity style={{flexDirection:'row',alignItems:'center',height:moderateScale(50),marginRight:isKeyboardVisible? moderateScale(20): 0}} onPress={() => navigation.navigate('CaseSearchScreen')}>
-              
-        //         <View style={{height:moderateScale(45),width:moderateScale(45),borderRadius:25,backgroundColor:'white',paddingVertical:moderateScale(6),paddingHorizontal:moderateScale(5),borderWidth:3,borderColor:'#008080'}}>
-        //             <Image source={caseSearchIcon} style={{height:moderateScale(35),width:moderateScale(35)}}/>
-        //         </View>
-        //         <ImageBackground source={tealBackground} resizeMode='cover' style={{width:searchBtnWidth,height:moderateScale(43),marginLeft:moderateScale(-18),zIndex:-1,borderTopRightRadius:25,borderBottomRightRadius:25,overflow:'hidden',alignItems:'center',justifyContent:'center'}}>
-        //           <Text style={{textAlignVertical:'center', color:'white',marginLeft:5,fontWeight:'500',fontSize:moderateScale(17)}}>Case Search</Text>             
-        //     </ImageBackground>         
-        //   </TouchableOpacity> 
-        // </View>
+      
         <View>
           
           <TouchableOpacity onPress={() => navigation.navigate('CaseSearchScreen')}>
-          <ImageBackground source={tealBackground} resizeMode='cover' style={{flexDirection:'row',alignItems:'center',paddingHorizontal:moderateScale(18),borderRadius:15,overflow:'hidden',paddingVertical:moderateScale(8)}}>
-            <Image source={searchIconWhite} style={{width:moderateScale(13),height:moderateScale(11),marginHorizontal:moderateScale(5)}}/>
+          <ImageBackground 
+            source={tealBackground} 
+            resizeMode='cover' 
+            style={localStyles.btnContainer}
+          >
+            <Image source={searchIconWhite} style={localStyles.searchIcon}/>
             <Text style={{color:'white'}}>Case Search</Text>
             </ImageBackground>
           </TouchableOpacity>
@@ -89,6 +81,18 @@ const [searchBtnBorder, setSearchBtnBorder] = useState(1);
     );
 }
 
-const styles = StyleSheet.create({})
+const localStyles = StyleSheet.create({
+  
+  btnContainer: {
+    height:moderateScale(20),
+    width:moderateScale(20),
+    marginRight:moderateScale(5)
+  },
+  searchIcon: {
+    width:moderateScale(13),
+    height:moderateScale(11),
+    marginHorizontal:moderateScale(5)
+  }
+})
 
 export default CaseSearchComponent;

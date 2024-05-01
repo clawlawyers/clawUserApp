@@ -84,11 +84,11 @@ const OnBoardingComponent2 = () => {
             return (
                 <View style={[localStyles.container,{alignItems:'center'}]}>
                     <View style={{height:moderateScale(320),width:moderateScale(320),alignItems:'center'}}>
-                    <View style={[localStyles.imageContainerOuter,{width:moderateScale(outerCircleRadius),height:moderateScale(outerCircleRadius)}]}>
-                        <View style={[localStyles.imageContainerInner,{width:moderateScale(innerCircleRadius),height:moderateScale(innerCircleRadius)}]}>
-                            <Image source={currentItem.img} style={[{width:moderateScale(imageRadius),height:moderateScale(imageRadius)}]}/>
+                        <View style={[localStyles.imageContainerOuter,{width:moderateScale(outerCircleRadius),height:moderateScale(outerCircleRadius)}]}>
+                            <View style={[localStyles.imageContainerInner,{width:moderateScale(innerCircleRadius),height:moderateScale(innerCircleRadius)}]}>
+                                <Image source={currentItem.img} style={[{width:moderateScale(imageRadius),height:moderateScale(imageRadius)}]}/>
+                            </View>
                         </View>
-                    </View>
                     </View>
                     <View style={{flexDirection:'row',marginTop:moderateScale(49),marginBottom:moderateScale(19)}}>
                         {features.map((item) => {
@@ -98,8 +98,8 @@ const OnBoardingComponent2 = () => {
                         })}
                     </View>
                     <View style={{alignItems:'center',justifyContent:'center'}}>
-                        <Text style={{fontSize:moderateScale(23),color:'#D9D9D9',fontWeight:'500',marginBottom:3,textAlign:'center',maxWidth:moderateScale(330)}}>{currentItem.title}</Text>
-                        <Text style={{fontSize:moderateScale(18),textAlign:'center',color:'#C8C0C0',maxWidth:moderateScale(320)}}>{currentItem.details}</Text>
+                        <Text style={localStyles.title}>{currentItem.title}</Text>
+                        <Text style={localStyles.details}>{currentItem.details}</Text>
                     </View>
                 </View>
             );
@@ -117,9 +117,14 @@ const OnBoardingComponent2 = () => {
 
             <View style={{flexDirection:'row',justifyContent:'space-between',paddingHorizontal:moderateScale(20),marginBottom:moderateScale(25)}}>
 
-                <Pressable onPress={goPrevSlide} style={{height:moderateScale(50),alignItems:'center',justifyContent:'center',  borderRadius:13}}><Text style={{color:'white'}}>{currentItemIndex==0 ? 'Skip':'Back'}</Text></Pressable>
-                <ImageBackground source={tealBackground} resizeMode='cover' style={{borderRadius:25,height:moderateScale(50),minWidth:moderateScale(50),alignItems:'center',justifyContent:'center',overflow:'hidden'}}>
-                <Pressable onPress={goNextSlide}>{currentItemIndex==3 ? <Text style={{color:'white',marginHorizontal:moderateScale(20)}}>Get started</Text>:<Image source={Onboardingchevron} style={{height:moderateScale(23),width:moderateScale(23)}}/>}</Pressable>
+                <Pressable onPress={goPrevSlide} style={{height:moderateScale(50),alignItems:'center',justifyContent:'center',  borderRadius:13}}>
+                    <Text style={{color:'white'}}>{currentItemIndex==0 ? 'Skip':'Back'}</Text>
+                </Pressable>
+
+                <ImageBackground source={tealBackground} resizeMode='cover' style={localStyles.btnStyle}>
+                <Pressable onPress={goNextSlide}>
+                    {currentItemIndex==3 ? <Text style={{color:'white',marginHorizontal:moderateScale(20)}}>Get started</Text>:<Image source={Onboardingchevron} style={{height:moderateScale(23),width:moderateScale(23)}}/>}
+                </Pressable>
                 </ImageBackground>
             </View>
             
@@ -161,6 +166,28 @@ const localStyles = StyleSheet.create({
         borderRadius:160,
         justifyContent:'center',
         alignItems:'center',
+    },
+    title: {
+        fontSize:moderateScale(23),
+        color:'#D9D9D9',
+        fontWeight:'500',
+        marginBottom:3,
+        textAlign:'center',
+        maxWidth:moderateScale(330)
+    },
+    details: {
+        fontSize:moderateScale(18),
+        textAlign:'center',
+        color:'#C8C0C0',
+        maxWidth:moderateScale(320)
+    },
+    btnStyle: {
+        borderRadius:25,
+        height:moderateScale(50),
+        minWidth:moderateScale(50),
+        alignItems:'center',
+        justifyContent:'center',
+        overflow:'hidden'
     }
 })
 

@@ -77,6 +77,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
           if(responseJson.success){
             storeData('userId',responseJson.data.jwt);
             storeData('jwt_exp_time',JSON.stringify(responseJson.data.expiresAt));
+            storeData('phone_no',body.phoneNumber)
             dispatch(changeVariable('jwtToken',responseJson.data.jwt))
             dispatch(changeVariable('phone_no',body.phoneNumber))
             createNewGPTUser(responseJson.data.jwt);
@@ -102,110 +103,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
           //  ToastAndroid.show('outer ctach'+err,ToastAndroid.SHORT);
         dispatch(changeVariable('loginLoader',false))
       }
-      // if(body.phoneNumber!=''){
-        // try {
-        //   // ToastAndroid.show('inside try',ToastAndroid.SHORT);
-        //    const res = await fetch(PHONE_VERIFY_URL, config);
-        //   //  ToastAndroid.show('after res',ToastAndroid.SHORT);
-
-        //    console.log(res);
-        //    const responseJson = await res.json();
-        //    console.log(responseJson);
-   
-        //   //  ToastAndroid.show('after responseJson',ToastAndroid.SHORT);
-        //    if(responseJson.success){
-        //     //  ToastAndroid.show('response success',ToastAndroid.SHORT);
-        //     //  if(responseJson.data.registered){
-        //        console.log('response registered'+responseJson.data.registered)
-        //             //  ToastAndroid.show('response registered'+responseJson?.data?.registered,ToastAndroid.SHORT);
-        //              storeData('userId',responseJson.data.jwt);
-        //              storeData('jwt_exp_time',JSON.stringify(responseJson.data.expiresAt));
-        //              dispatch(changeVariable('jwtToken',responseJson.data.jwt))
-        //              dispatch(changeVariable('phone_no',body.phoneNumber))
-        //              dispatch(changeVariable('loginLoader',false))
-        //             //  dispatch(changeVariable('isUserLoggedIn',true))
-        //               // ToastAndroid.show('before navigation',ToastAndroid.SHORT);
-        //              ToastAndroid.show('OTP verified!',ToastAndroid.SHORT);
-        //              navigation.replace('UserFlow')
-        //             //  ToastAndroid.show('after navigation',ToastAndroid.SHORT);   
      
-        //   //    }else if(responseJson.data.registered==false){
-        //   //      console.log('response success = '+responseJson.data.registered)
-        //   //            ToastAndroid.show('response success = '+responseJson?.data?.registered,ToastAndroid.SHORT);
-        //   //           //  dispatch(changeVariable('isUserLoggedIn',true))
-        //   //            dispatch(changeVariable('jwtToken', responseJson.data.jwt))
-        //   //            storeData('jwt_exp_time',JSON.stringify(responseJson.data.expiresAt));
-        //   //            dispatch(changeVariable('phone_no',body.phoneNumber))
-        //   //            ToastAndroid.show('OTP verified!',ToastAndroid.SHORT);
-        //   //            navigation.replace('RegisterUser',{phoneNumber : body.phoneNumber, userId : responseJson.data.jwt})
-                     
-        //   //    }
-        //   //  }
-        //   //  else if(responseJson.error){
-     
-        //   //   console.log('Something went wrong!');
-            
-        //   //   dispatch(changeVariable('loginLoader',false))
-        //   }
-        //    else{
-        //    ToastAndroid.show('Something went wrong!', ToastAndroid.SHORT);
-        //    dispatch(changeVariable('loginLoader',false))
-        //    }
-         
-        //    // fetch(PHONE_VERIFY_URL, config)
-        //    //   .then( response => {
-        //    //      response.json()
-        //    //     console.log('response',response)
-        //    //     ToastAndroid.show('response',ToastAndroid.SHORT);
-        //    //   })
-        //    //   .then(responseJson => {
-        //    //     responseJson = response.json();
-        //    //     ToastAndroid.show('responseJson',ToastAndroid.SHORT);
-        //    //     console.log(responseJson)
-        //    //     if (responseJson?.data?.registered==true) {
-        //    //       console.log('response success'+responseJson?.data?.registered)
-        //    //       ToastAndroid.show('response success'+responseJson?.data?.registered,ToastAndroid.SHORT);
-        //    //       storeData('userId',responseJson.data.jwt);
-        //    //       storeData('jwt_exp_time',JSON.stringify(responseJson.data.expiresAt));
-        //    //       dispatch(changeVariable('jwtToken',responseJson.data.jwt))
-        //    //       dispatch(changeVariable('phone_no',body.phoneNumber))
-        //    //       dispatch(changeVariable('loginLoader',false))
-        //    //       dispatch(changeVariable('isUserLoggedIn',true))
-        //    //        ToastAndroid.show('before navigation',ToastAndroid.SHORT);
-        //    //       ToastAndroid.show('OTP verified!',ToastAndroid.SHORT);
-        //    //       navigation.replace('UserFlow')
-        //    //       ToastAndroid.show('after navigation',ToastAndroid.SHORT);             
-     
-        //    //     }else if(responseJson?.data?.registered == false){
-        //    //       console.log('response success'+responseJson?.data?.registered)
-        //    //       ToastAndroid.show('response success'+responseJson?.data?.registered,ToastAndroid.SHORT);
-        //    //       dispatch(changeVariable('isUserLoggedIn',true))
-        //    //       dispatch(changeVariable('jwtToken', responseJson.data.jwt))
-        //    //       dispatch(changeVariable('phone_no',body.phoneNumber))
-        //    //       ToastAndroid.show('OTP verified!',ToastAndroid.SHORT);
-        //    //       navigation.replace('RegisterUser',{phoneNumber : body.phoneNumber, userId : responseJson.data.jwt})
-                 
-        //    //     }
-               
-        //    //   })
-        //    //   .catch(err => {
-        //    //     console.log('ee', err);
-        //    //     ToastAndroid.show('inner ctach'+err,ToastAndroid.SHORT);
-        //    //     dispatch(changeVariable('loginLoader',false))
-        //    //   });
-        //  } catch (err) {
-        //    console.log('err', err);
-        //   //  ToastAndroid.show('outer ctach'+err,ToastAndroid.SHORT);
-        //    dispatch(changeVariable('loginLoader',false))
-        //  }
-      // }
-      // else{
-      //   ToastAndroid.show("body.phoneNumber!=''",ToastAndroid.SHORT);
-      //   dispatch(changeVariable('loginLoader',false))
-      // }
-      
-      
-    
     
 }
 
@@ -219,6 +117,7 @@ const localSigninHelper = async({data,navigation,dispatch}) =>{
   const currentTimeStamp = Date.parse(new Date());
   console.log(currentTimeStamp);
   let jwt_exp_time = await AsyncStorage.getItem('jwt_exp_time');
+  let phone_no = await AsyncStorage.getItem('phone_no');
   jwt_exp_time = JSON.parse(jwt_exp_time)
   console.log(currentTimeStamp,jwt_exp_time)
   if(currentTimeStamp > jwt_exp_time){
@@ -233,6 +132,7 @@ const localSigninHelper = async({data,navigation,dispatch}) =>{
   }
   if(userId){
     dispatch(changeVariable('jwtToken',userId));
+    dispatch(changeVariable('phone_no',phone_no));
     console.log('vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv')
     //createNewGPTUser(userId);
     // getUserProfile();

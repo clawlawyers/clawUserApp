@@ -1,21 +1,41 @@
 import { View, Text, StyleSheet, StatusBar, Pressable, ImageBackground } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import {connect} from 'react-redux';
+import {connect, useSelector} from 'react-redux';
 import { moderateScale } from '../../styles/mixins';
 import Ripple from 'react-native-material-ripple'
 import Slider from '@react-native-community/slider';
 import {useNavigation} from '@react-navigation/native';
 import tealBackground from '../../assets/tealBackground.png';
-
+import {CFEnvironment, CFSession, } from 'cashfree-pg-api-contract';
+import {   CFPaymentGatewayService,  } from 'react-native-cashfree-pg-sdk';
+import { CREATE_PAYMENT_DEV, CREATE_PAYMENT_PROD } from '../../actions';
 const YearlyPricing = () => {
 
+    const jwtToken = useSelector( state => state.variables.jwtToken);
     const [value, setValue] = useState(1);
     const [session, setSession] = useState(1);
+    const [request,setRequest] = useState(500);
     const [typesOfTokens,setTokens] = useState([1,2,3,4]);
     const [typesOfSessions,setSessionType] = useState([1,2,3,4]);
-    const [price,setPrice] = useState(199);
+    const [price,setPrice] = useState(1791);
     const navigation = useNavigation()
 
+    const setTotalTokens = () => {
+
+        if(value==1)
+        {
+            setRequest(500);
+        }else if(value==2)
+        {
+            setRequest(1000);
+        }else if(value==3)
+        {
+            setRequest(5000);
+        }else if(value==4)
+        {
+            setRequest('unlimited');
+        }
+    }
     const calculatePrice = () => {
 
         if(session==1){
@@ -63,15 +83,65 @@ const YearlyPricing = () => {
             }
         }
     }
-
-    const Milestone = ({item,value}) => {
-        return (
-            <View key={item} style={[localStyles.milestone,{backgroundColor:value>=item?'#008080':'white'}]}></View>
-        )
-    }
     
+    const createOrder = () => {
+
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("Authorization", `Bearer ${jwtToken}`);
+        const raw = JSON.stringify({
+        "amount": price,
+        "request": request,
+        "session": session,
+        "billingCycle": "yearly",
+        "plan": `PRO_${request}_${session}`
+        });
+
+        const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow"
+        };
+
+        fetch(CREATE_PAYMENT_PROD, requestOptions)
+        .then((response) => response.json())
+        .then((result) => {
+            console.log(result)
+            const payment_session_id= result.data.payment_session_id;
+            const order_id = result.data.order_id;
+            try {
+                const session = new CFSession(
+                  payment_session_id,
+                  order_id,
+                  CFEnvironment.PRODUCTION
+                );
+                console.log('Session', JSON.stringify(session));
+                CFPaymentGatewayService.doWebPayment(JSON.stringify(session));
+              } catch (e) {
+                console.log('e',e);
+                ToastAndroid.show('Something went wrong, please try again later.',ToastAndroid.SHORT);
+              }
+        })
+        .catch((error) => console.error(error));
+       }
+        
+       useEffect(() => {
+        CFPaymentGatewayService.setCallback({
+            onVerify(orderID){
+             console.log('orderId is :' + orderID);
+             navigation.navigate('PaymentStatus',{status:'success'});
+            },
+            onError(error, orderID) {
+              console.log('exception is : ' + JSON.stringify(error) + '\norderId is :' + orderID);
+              navigation.navigate('PaymentStatus',{status:'fail'});
+    
+            },
+          });
+       })
+
     useEffect(()=>{
-        // updateTokens();
+        setTotalTokens();
         calculatePrice();
     },[value])
 
@@ -156,19 +226,27 @@ const YearlyPricing = () => {
                     <Text style={{fontSize:moderateScale(27),fontWeight:'500',color:'black'}}>You're paying</Text>
                     <View style={{flexDirection:'row',marginTop:moderateScale(13)}}>
                         <Text style={{color:'black',fontSize:moderateScale(30)}}>₹</Text>
-                        <Text style={{fontSize:moderateScale(30),color:'black',paddingHorizontal:moderateScale(40),marginLeft:moderateScale(10),borderWidth:1,borderColor:'#00808040',borderRadius:10}}>{price}</Text>
+                        <Text style={localStyles.price}>{price}</Text>
                     </View>
                 </View>
 
-                <ImageBackground source={tealBackground}  style={{backgroundColor:'#008080',borderRadius:10,overflow:'hidden',marginTop:moderateScale(40),marginBottom:moderateScale(39)}} >             
-                    <Ripple style={{paddingHorizontal:moderateScale(44),}} rippleColor='white' onPress={() => navigation.navigate('PaymentScreen')}>
-                        <Text style={{color:'white',fontSize:moderateScale(20),fontWeight:'500',marginVertical:moderateScale(16)}}>Get it now</Text>
+                <ImageBackground source={tealBackground}  style={localStyles.btnContainer} >             
+                    <Ripple 
+                    style={{paddingHorizontal:moderateScale(44),}} 
+                    rippleColor='white' 
+                    onPress={createOrder}>
+                        <Text style={localStyles.btnText}>Get it now</Text>
                     </Ripple>
                     </ImageBackground>
             </View>
     );
 }
 
+const Milestone = ({item,value}) => {
+    return (
+        <View key={item} style={[localStyles.milestone,{backgroundColor:value>=item?'#008080':'white'}]}></View>
+    )
+}
 const localStyles = StyleSheet.create({
 
     container:{
@@ -222,7 +300,30 @@ const localStyles = StyleSheet.create({
         fontSize:moderateScale(45),
         fontWeight:'bold',
         marginTop:moderateScale(15)
+    },
+    btnText:{
+        color:'white',
+        fontSize:moderateScale(20),
+        fontWeight:'500',
+        marginVertical:moderateScale(16)
+    },
+    btnContainer:{
+        backgroundColor:'#008080',
+        borderRadius:10,
+        overflow:'hidden',
+        marginTop:moderateScale(40),
+        marginBottom:moderateScale(39)
+    },
+    price: {
+        fontSize:moderateScale(30),
+        color:'black',
+        paddingHorizontal:moderateScale(40),
+        marginLeft:moderateScale(10),
+        borderWidth:1,
+        borderColor:'#00808040',
+        borderRadius:10
     }
+
 })
 export default connect(null,{
 

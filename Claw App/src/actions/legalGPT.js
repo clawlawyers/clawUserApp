@@ -190,7 +190,29 @@ const getGPTTokensHelper = async(dispatch) => {
 
 }
 
+const clearConversationHelper = async({jwtToken,dispatch}) => {
 
+   
+    const BearerToken = 'Bearer ' + jwtToken;
+    const myHeaders = new Headers();
+    myHeaders.append('Authorization',BearerToken);
+    myHeaders.append("Content-Type", "application/json");
+    
+    const requestOptions = {
+      
+      method: "DELETE",
+      headers : myHeaders,
+    }
+
+    try{
+
+      const response = await fetch('https://claw-backend.onrender.com/api/v1/gpt/sessions/legalGPT',requestOptions);
+      const responseJSON = await response.json();
+    }catch(err){
+      console.log(err);
+      ToastAndroid.show('Something went wrong!',ToastAndroid.SHORT);
+    }
+  }
 
 export const setActiveSessionID = (sessionId) => dispatch => {
 
@@ -220,4 +242,9 @@ export const RetreiveMessages = (active_chatID) => dispatch => {
 export const getTokens = () => dispatch => {
 
     getGPTTokensHelper(dispatch)
+}
+
+export const clearConversation = (jwtToken) => dispatch => {
+
+    clearConversationHelper({jwtToken,dispatch})
 }

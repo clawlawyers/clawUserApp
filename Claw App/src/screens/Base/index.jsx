@@ -10,15 +10,15 @@ import SignupUser from '../AuthFlow/SignupUser';
 import AuthFlow from '../AuthFlow/AuthFlow';
 import NewsDetail from '../user/NewsScreen/NewsDetail';
 import InitialLandingScreen from './InitialLandingScreen';
-import GPTCustomDrawer from '../../components/Drawer/GPTCustomDrawer';
 import GPTProfileScreen from '../user/LegalGPTScreen/GPTProfileScreen';
 import RegisterUser from '../AuthFlow/RegisterUser';
 import MyWebComponent from '../user/LegalGPTScreen/WebScreen';
 import LegalGPTDrawer from '../../components/Drawer/LegalGPTDrawer';
 import PricingScreen from '../user/PricingScreen';
-import PaymentScreen from '../user/PricingScreen/PaymentScreen';
 import CaseSearchScreen from '../user/CaseSearch';
 import CaseDetail from '../user/CaseSearch/CaseDetail';
+import CourtListScreen from '../user/CaseSearch/CourtListScreen';
+import PaymentStatus from '../user/PricingScreen/PaymentStatus';
 const UserCall = createNativeStackNavigator();
 const Root = createNativeStackNavigator();
 const Stack = createNativeStackNavigator();
@@ -54,6 +54,7 @@ function GPTFlow() {
         width: 250,
       },headerShown:false,
       }} drawerContent={(props) => <LegalGPTDrawer {...props}/>}> 
+      {/* <Drawer.Screen component={PaymentStatus} name='PaymentStatus' />       */}
 
       {/* <Drawer.Screen component={CaseSearchScreen} name='CaseSearchScreen' /> */}
       <Drawer.Screen component={LegalGPTScreen} name='Legal GPT' options={{headerShown:false}}/>
@@ -61,10 +62,11 @@ function GPTFlow() {
       <Drawer.Screen component={NewsDetail} name='NewsDetail' />
       <Drawer.Screen component={MyWebComponent} name='WebScreen' />
       <Drawer.Screen component={GPTProfileScreen} name='GPTProfileScreen' />
-      <Drawer.Screen component={PricingScreen} name='PricingScreen' />
-      <Drawer.Screen component={PaymentScreen} name='PaymentScreen' />      
+      <Drawer.Screen component={PricingScreen} name='PricingScreen' />   
+      <Drawer.Screen component={PaymentStatus} name='PaymentStatus' />      
       <Drawer.Screen component={CaseSearchScreen} name='CaseSearchScreen' />
       <Drawer.Screen component={CaseDetail} name='CaseDetail' />
+      <Drawer.Screen component={CourtListScreen} name='CourtListScreen' />
     </Drawer.Navigator>
   )
 }

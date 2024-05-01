@@ -22,6 +22,7 @@ import GPTBackground from '../../../components/Drawer/GPTBackground';
 import CaseSearchComponent from '../../../components/CaseSearchComponent';
 import ReferralModal from '../../../components/Modals/ReferralModal';
 import UpgradeModal from '../../../components/Modals/UpgradeModal';
+import GetInternetStatus from '../../../actions/internetStatus';
 // import Typewriter from '../../../components/useTypeWriter';
 
 const {UIManager} = NativeModules;
@@ -139,7 +140,7 @@ const LegalGPTScreen = (props) => {
 
           <CaseSearchComponent />
         </View>
-
+        <GetInternetStatus/>
        
           <ReferralModal isVisible={referralModalVisible}/>
           <UpgradeModal isVisible={upgradeModalVisible} />
@@ -185,7 +186,7 @@ const LegalGPTScreen = (props) => {
               
           {botLoader ?  
             <View style={{alignSelf:'flex-start',flexDirection:'row',marginVertical:moderateScale(5),width:'30%'}}>
-              <View style={{backgroundColor:botLoader?'#00808080':'#008080',height:moderateScale(50),width:moderateScale(50),alignItems:'center',justifyContent:'center',borderRadius:25,marginRight:6,marginTop:9}} >
+              <View style={[{backgroundColor:botLoader?'#00808080':'#008080',},localStyles.factBot]} >
                 <Image source={Robot} style={{height:moderateScale(50),width:moderateScale(50)}}/>
               </View>
               <DotIndicator color={botLoader?'#00808080':'#008080'} size={7} count={3}/>
@@ -199,10 +200,9 @@ const LegalGPTScreen = (props) => {
             <View style={{zIndex:2,flexDirection:'row'}}>
               <FastImage source={require('../../../assets/botAnimation.gif')} style={{height:80,width:80,bottom:moderateScale(-15),position:'absolute',left:moderateScale(-15)}}/> 
               <View style={{flexDirection:'row',alignItems:'flex-end',bottom:moderateScale(40),marginLeft:moderateScale(40)}}>
-                 <View style={{backgroundColor:'#00808095',height:6,width:6,borderRadius:10,marginLeft:moderateScale(9),bottom:moderateScale(10)}}></View>
-                  <View style={{backgroundColor:'#00808095',height:10,width:10,borderRadius:10,
-                  marginLeft:moderateScale(-1),margin:moderateScale(2),bottom:moderateScale(15)}}></View>
-                  <View style={{borderWidth:1,borderColor:'#00808095',marginRight:moderateScale(50),paddingHorizontal:moderateScale(20),paddingVertical:moderateScale(10),borderRadius:moderateScale(20),backgroundColor:'white'}}>
+                 <View style={localStyles.bubble1}></View>
+                  <View style={localStyles.bubble2}></View>
+                  <View style={localStyles.factContainer}>
 
                   <Text style={{color:'black',fontSize:moderateScale(18)}}>
                   <TypeWriter text={Math.floor(Math.random() * 10)} delay={1} /></Text>
@@ -211,7 +211,7 @@ const LegalGPTScreen = (props) => {
               </View>
               </View>:null}
           
-          <View style={{borderWidth:1,borderColor:'#e5e5e540',borderRadius:10,width:'100%',flexDirection:'row',height:moderateScale(52),zIndex:1,backgroundColor:'#43353340',marginBottom:moderateScale(30)}}>
+          <View style={localStyles.textinputContainer}>
             <TextInput 
               placeholder='Type Your Legal Queries...' 
               cursorColor='grey'
@@ -287,7 +287,53 @@ const localStyles = StyleSheet.create({
     paddingVertical:moderateScale(8),
     borderRadius:10,
     elevation:12
-  } 
+  } ,
+  textinputContainer: {
+    borderWidth:1,
+    borderColor:'#e5e5e540',
+    borderRadius:10,
+    width:'100%',
+    flexDirection:'row',
+    height:moderateScale(52),
+    zIndex:1,
+    backgroundColor:'#43353340',
+    marginBottom:moderateScale(30)
+  },
+  factContainer: {
+    borderWidth:1,
+    borderColor:'#00808095',
+    marginRight:moderateScale(50),
+    paddingHorizontal:moderateScale(20),
+    paddingVertical:moderateScale(10),
+    borderRadius:moderateScale(20),
+    backgroundColor:'white'
+  },
+  bubble1: {
+    backgroundColor:'#00808095',
+    height:6,
+    width:6,
+    borderRadius:10,
+    marginLeft:moderateScale(9),
+    bottom:moderateScale(10)
+  },
+  bubble2: {
+    backgroundColor:'#00808095',
+    height:10,
+    width:10,
+    borderRadius:10,
+  marginLeft:moderateScale(-1),
+  margin:moderateScale(2),
+  bottom:moderateScale(15)
+},
+factBot: {
+  height:moderateScale(50),
+  width:moderateScale(50),
+  alignItems:'center',
+  justifyContent:'center',
+  borderRadius:25,
+  marginRight:6,
+  marginTop:9
+}
 
 })
 

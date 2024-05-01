@@ -15,6 +15,7 @@ import tealBackground from '../../assets/tealBackground.png';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Modal from "react-native-modal";
 import FastImage from 'react-native-fast-image'
+import GetInternetStatus from '../../actions/internetStatus'
 const {UIManager} = NativeModules;
 
 UIManager.setLayoutAnimationEnabledExperimental &&
@@ -158,9 +159,9 @@ const SignupUser = (props) => {
             setBtnDimensions({
                 
                 btnText: btnText,
-                btnWidth: btnWidth+30,
-                btnHeight: btnHeight+1,
-                btnPadding: btnPadding+20
+                btnWidth: btnWidth+3,
+                btnHeight: btnHeight,
+                btnPadding: btnPadding
             })
             setIsModalVisible(true);
         }catch(err){
@@ -176,6 +177,17 @@ const SignupUser = (props) => {
              ToastAndroid.show("Couldn't complete request, try again later!",ToastAndroid.SHORT);
            
         }
+        LayoutAnimation.configureNext({
+            duration: 500,
+            update: {type: 'spring', springDamping: 0.4},
+          });
+        setBtnDimensions({
+                
+            btnText: btnText,
+            btnWidth: btnWidth,
+            btnHeight: btnHeight,
+            btnPadding: btnPadding
+        })
         setIsLoading(false);
         dispatch(changeVariable('loginLoader',false))
         
@@ -195,8 +207,7 @@ const SignupUser = (props) => {
 
             const res = await confirm.confirm(OTP);
             console.log(res);
-           // alert('sign in successful!');
-           // navigation.replace('UserFlow')
+          
             const data = {
                 phoneNumber: _phoneNumber,
                 verified: true
@@ -227,7 +238,7 @@ const SignupUser = (props) => {
           >
             <StatusBar backgroundColor='#1B202C'/>
             <View style={localStyles.container}>            
-                
+                <GetInternetStatus/>
                 <View style={[styles.alignViewCenter, styles.alignItemsLeft, {alignItems:'center', marginTop: verticalScale(35)}]}>
                     <Text style={localStyles.heading}>
                         Login/Create Account
@@ -253,12 +264,6 @@ const SignupUser = (props) => {
                 />
             </View>
 
-           {/* <View style={{flexDirection:'row',alignItems:'center',marginTop:moderateScale(5)}}>
-                <Image source={Error} style={{height:15,width:15}}/>
-                    <Text style={{color:'#FA5252',marginLeft:5}}>Enter a valid phone number</Text>
-            </View>  */}
-
-            {/* <LinearGradient colors={['#008080','#006666']} style={{alignSelf:'center',marginTop:30,overflow:'hidden',borderRadius:moderateScale(15),elevation:19}}> */}
             <ImageBackground source={tealBackground} resizeMode='cover' style={{alignSelf:'center',marginTop:30,overflow:'hidden',borderRadius:moderateScale(15),elevation:9}}>
                 <Ripple 
                     style={[{alignSelf:'center',height:moderateScale(btnDimensions.btnHeight),width:moderateScale(btnDimensions.btnWidth),paddingTop:moderateScale(10)}]}
@@ -276,20 +281,7 @@ const SignupUser = (props) => {
                  }
                 </Ripple>
             </ImageBackground>
-            {/* </LinearGradient> */}
-           {/* <View style={[styles.loginButton,{alignSelf:'center',marginTop:30,overflow:'hidden',}]}>
-            <Ripple 
-                 style={[styles.loginButton, styles.alignViewCenter, styles.alignItemsCenter,{alignSelf:'center',marginTop:0,backgroundColor:'#008080'}]}
-                onPress ={validatePhone}
-                rippleColor='white'
-                disabled={isLoading}
-            >
-               { !isLoading ?<Text style={[styles.font_25, styles.textWhite, styles.font_600,{fontWeight:'400'}]}>
-                 SIGN UP
-                </Text>:
-                < BarIndicator color='white' size={20}/>}
-            </Ripple>
-            </View> */}
+           
             </View>
 
             </LinearGradient>
@@ -299,20 +291,23 @@ const SignupUser = (props) => {
     return (       
 
         <LinearGradient
-            // colors={['#3A2469','#3A2469', '#13161F']}
             colors={['white','white']}
             start={{x: 0, y: 0}}
             end={{x: 1, y: 1}}
             style={[localStyles.container,{justifyContent:'flex-start',alignItems:'flex-start',paddingHorizontal:0}]}
         >
             <StatusBar backgroundColor='#1B202C'/>
-            <Modal  isVisible={isModalVisible} animationIn='slideInUp' coverScreen={false} animationInTiming={800} backdropColor='#10454b' backdropOpacity={1} style={localStyles.modal} >
-            {/* <View style={[ {alignItems:'center',paddingTop:moderateScale(24)}]}>
-                
-                <Image source={OTPGraphic} style={{height:moderateScale(140),width:moderateScale(200)}} />
-                
-            </View> */}
-            <View style={{position:'absolute',height:moderateScale(200),width:moderateScale(200),borderRadius:100,backgroundColor:'#1b202c',top:moderateScale(-80),left:moderateScale(110),right:'auto',alignItems:'center'}}>
+            <Modal  
+                isVisible={isModalVisible} 
+                animationIn='slideInUp' 
+                coverScreen={false} 
+                animationInTiming={800} 
+                backdropColor='#10454b' 
+                backdropOpacity={1} 
+                style={localStyles.modal} 
+            >
+            
+            <View style={localStyles.fastImage}>
                 <FastImage source={require('../../assets/OTPVerification.gif')} style={{height:150,width:150,}}/> 
             </View>
          
@@ -325,7 +320,6 @@ const SignupUser = (props) => {
 
                 <Text style={[styles.font_22, styles.font_med, {color: '#A19E9E',textAlign:'center'}]}>
                 6 digit code has been send to +91 {_phoneNumber}. 
-                    {/* <Text style={localStyles.links} onPress={() => setConfirm('')}>Edit</Text> */}
                 </Text>
                 
             </View>
@@ -570,6 +564,17 @@ const localStyles = StyleSheet.create({
         borderTopLeftRadius:20,
         borderTopRightRadius:20,
         marginBottom:0
+    },
+    fastImage:{
+        position:'absolute',
+        height:moderateScale(200),
+        width:moderateScale(200),
+        borderRadius:100,
+        backgroundColor:'#1b202c',
+        top:moderateScale(-80),
+        left:moderateScale(110),
+        right:'auto',
+        alignItems:'center'
     },
     heading : {
         color:'#008080',

@@ -8,39 +8,30 @@ import { moderateScale } from '../../../styles/mixins';
 import {MaterialIndicator} from 'react-native-indicators';import { WebView } from 'react-native-webview';
 const CaseDetail = ({route}) => {
 
-    const {caseId} = route.params;
+    const {driveId,caseId} = route.params;
     const jwtToken = useSelector( state =>  state.variables.jwtToken);
     const [caseDetail, setCaseDetail] = useState(''); 
     const navigation = useNavigation()
-    console.log(caseId)
+    console.log(driveId,caseId)
 
     const caseDetailHTML = `<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width"><style>
     body { font-size: 110%; word-wrap: break-word; overflow-wrap: break-word; color:white; background-color:#1b202c; font-family: times; }
 </style></head><body>${caseDetail}</body></html>`;
     const getCaseDetails = async() => {
 
-        console.log('getcase');
         const BearerToken = 'Bearer ' + jwtToken;
-        console.log('getcase1');
         const myHeaders = new Headers();
-        console.log('getcase2');
         myHeaders.append('Content-Type','application/json');
-        console.log('getcase3');
-
         myHeaders.append('Authorization',BearerToken);
-        console.log('getcase4');
 
-        const url = CASE_RETREIVAL_URL+caseId;
-        console.log('getcase5');
-
+        const url = `${CASE_RETREIVAL_URL}${driveId}/${caseId}`;
+        console.log(url)
         const requestOptions = {
             method : 'GET',
             headers : myHeaders
         }
-        console.log(url)
         try{
             const response = await fetch( url,requestOptions);
-            console.log(response);
             const responseJSON = await response.json();
             console.log(responseJSON);
             if(responseJSON.success)

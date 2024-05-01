@@ -5,6 +5,8 @@ import {LocalSignIn } from '../../actions/authentication'
 import { getUserProfile } from '../../actions/userProfile'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {connect} from 'react-redux';
+import getInternetStatus from '../../actions/internetStatus'
+import GetInternetStatus from '../../actions/internetStatus'
 const InitialLandingScreen =(props) => {
 
    const navigation = useNavigation();
@@ -24,10 +26,12 @@ const InitialLandingScreen =(props) => {
   }
     useEffect(() =>{
       getActiveUser();
+      
     },[isFocused]);
   return (
     <View style={{backgroundColor:'white',flex:1,justifyContent:'center'}}>
     <StatusBar backgroundColor='#1B202C'/>
+    <GetInternetStatus/>
       <Image source={require('../../assets/app-icon.png')} style={{alignSelf:'center'}}/>
     </View>
   )

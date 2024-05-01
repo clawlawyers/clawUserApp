@@ -25,6 +25,8 @@ const INITIAL_STATE = {
   },
   referralModalVisible : false,
   upgradeModalVisible : false,
+  paymentModalVisible : false,
+  paymentStatus : ''
 };
 const a = (state = INITIAL_STATE, action) => {
   switch (action.type) {

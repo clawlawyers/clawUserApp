@@ -15,12 +15,14 @@ import {MaterialIndicator} from 'react-native-indicators';
 import Ripple from 'react-native-material-ripple'
 import UpgradeModal from '../../../components/Modals/UpgradeModal';
 import ReferralModal from '../../../components/Modals/ReferralModal';
-import caseSearchIcon from '../../../assets/caseSearchIcon.png';
+import { courtData } from '../../../data/CourtList';
+
 const CaseSearchScreen = () => {
 
     const jwtToken = useSelector( state => state.variables.jwtToken)
     const [isFocusCourt, setIsFocusCourt] = useState();
-    const [court, setCourt] = useState('Supreme Court');
+    const [court, setCourt] = useState();
+    const [driveId, setDriveId] = useState();
     const [fromDate, setFromDate] = useState('01/01/1980');
     const [toDate, setToDate] = useState('04/04/2024');
     const [isWaiting, setIsWaiting] = useState(false);
@@ -36,12 +38,7 @@ const CaseSearchScreen = () => {
     const navigation = useNavigation()
     console.log(isWaiting);
     
-    const courtData = [
-        {
-            id :1,
-            name: 'Supreme Court'
-        }
-    ]
+    
     const onFromDateChange = (date) => {
 
         date = new Date(date).toISOString();
@@ -90,7 +87,7 @@ const CaseSearchScreen = () => {
             query : searchString,
             startDate : fromDate,
             endDate : toDate,
-            courtName : 'Supreme Court of India'
+            courtName : court
         });
 
         console.log(data)
@@ -147,6 +144,7 @@ const CaseSearchScreen = () => {
                     onChange={item => {
                         // _setStateId(item.stateId);
                         setCourt(item.name);
+                        setDriveId(item.driveId);
                         setIsFocusCourt(false);
                     }}
                 />
@@ -161,8 +159,7 @@ const CaseSearchScreen = () => {
                             <Text style={localStyles.dateText}>{fromDate}</Text>
                             <Image source={chevronBlack} style={{height:moderateScale(5),width:moderateScale(10)}}/>
                         </View>
-                    <Pressable style={{backgroundColor:'transparent',width:'100%',height:moderateScale(53),zIndex:2,position:'absolute'}} onPress={showFromCalender}>
-
+                    <Pressable style={localStyles.viewCalender} onPress={showFromCalender}>
                     </Pressable>
                     </View>
                 
@@ -224,10 +221,6 @@ const CaseSearchScreen = () => {
                     />
                 </View>
                 </View>
-                {/* </ScrollView> */}
-                {/* <View style={{zIndex:-1,opacity:0.4,display:caseList.length==0?'block':'none'}}>
-                    <Image source={caseSearchIcon} style={{height:moderateScale(150),width:moderateScale(150)}}/>
-                </View> */}
                 <UpgradeModal isVisible={upgradeModalVisible} />
                 <ReferralModal isVisible={referralModalVisible}/>
                 <View>
@@ -248,7 +241,7 @@ const CaseSearchScreen = () => {
                                     <Ripple 
                                         rippleColor='white' 
                                         style={localStyles.searchIcon} 
-                                        onPress = {() => navigation.navigate('CaseDetail',{caseId : item.id})}
+                                        onPress = {() => navigation.navigate('CaseDetail',{driveId : driveId,caseId : item.id})}
                                     >
                                         <Image source={searchIconTeal} style={{height:moderateScale(11),width:moderateScale(13)}}/>
                                     </Ripple>
@@ -293,6 +286,14 @@ const localStyles = StyleSheet.create({
         zIndex:2,
         elevation:8
     },
+    viewCalender:{
+        backgroundColor:'transparent',
+        width:'100%',
+        height:moderateScale(53),
+        zIndex:2,
+        position:'absolute'
+    },
+    
     dateText:{
         color:'black',
         fontSize:moderateScale(16),

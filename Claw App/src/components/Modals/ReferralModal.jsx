@@ -1,6 +1,6 @@
 
 import Modal from 'react-native-modal';
-import { Image, ImageBackground, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native';
+import { Image, ImageBackground, StyleSheet, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native';
 // import {useSelector, useDispatch} from '@react-navigation/native';
 import { changeVariable } from '../../actions';
 import {useSelector, useDispatch} from 'react-redux';
@@ -71,24 +71,26 @@ const ReferralModal = ({isVisible}) => {
                 animationOutTiming={300}
                 backdropTransitionInTiming={300}
                 backdropTransitionOutTiming={300}
-                style={{borderWidth:2,borderColor:'teal',backgroundColor:'white',borderRadius:15,maxHeight:moderateScale(380),alignSelf:'center',width:'85%',marginHorizontal:moderateScale(20), marginTop:moderateScale(200),overflow:'hidden'}}
-            >
+                style={localStyles.modal}
+            >local
                 {/* <ImageBackground source={referralBackground} opacity={0.2}> */}
                     <View style={{marginHorizontal:moderateScale(20),opacity:1,paddingTop:moderateScale(150)}}>
-                        <TouchableOpacity onPress={close} style={{alignItems:'flex-end'}}><Image source={crossGrey} style={{height:moderateScale(20),width:moderateScale(20),bottom:moderateScale(-20)}}/></TouchableOpacity>
+                        <TouchableOpacity onPress={close} style={{alignItems:'flex-end'}}>
+                            <Image source={crossGrey} style={localStyles.crossBtn}/>
+                        </TouchableOpacity>
                         <View style={{marginTop:moderateScale(0),}}>
-                            <Image source={referralGift} style={{height:moderateScale(220),width:moderateScale(220),alignSelf:'center',bottom:moderateScale(-20)}}/>
+                            <Image source={referralGift} style={localStyles.image}/>
                             <TextInput 
-                                style={{borderColor:'teal',borderWidth:1,borderRadius:15,fontWeight:'bold',textAlign:'center',fontSize:moderateScale(20),marginHorizontal:moderateScale(50)}}
+                                style={localStyles.referralInput}
                                 placeholder='Referral code'
                                 placeholderTextColor='#00000050'
                                 value={referralCode}
                                 onChangeText={(text) => setReferralCode(text)}
                             />
-                            <ImageBackground source={tealBackground} style={{marginBottom:moderateScale(200),justifyContent:'center',alignItems:'center',paddingVertical:moderateScale(10),borderRadius:10,overflow:'hidden',width:moderateScale(150), alignSelf:'center',marginVertical:moderateScale(20)}}>
+                            <ImageBackground source={tealBackground} style={localStyles.btnContainer}>
                                 <TouchableOpacity onPress={redeemCode} >
 
-                                <Text style={{color:'white',fontWeight:'bold',fontSize:moderateScale(20)}}>Redeem</Text>
+                                <Text style={btnText}>Redeem</Text>
                                 </TouchableOpacity>
                             </ImageBackground>
                         </View>
@@ -105,4 +107,60 @@ const ReferralModal = ({isVisible}) => {
 
 }
 
+const localStyles = StyleSheet.create({
+
+    btnText :{
+        color:'white',
+        fontWeight:'bold',
+        fontSize:moderateScale(20)
+    },
+
+    btnContainer: {
+        marginBottom:moderateScale(200),
+        justifyContent:'center',
+        alignItems:'center',
+        paddingVertical:moderateScale(10),
+        borderRadius:10,
+        overflow:'hidden',
+        width:moderateScale(150), 
+        alignSelf:'center',
+        marginVertical:moderateScale(20)
+    },
+
+    referralInput : {
+        borderColor:'teal',
+        borderWidth:1,
+        borderRadius:15,
+        fontWeight:'bold',
+        textAlign:'center',
+        fontSize:moderateScale(20),
+        marginHorizontal:moderateScale(50)
+    },
+     image: {
+        height:moderateScale(220),
+        width:moderateScale(220),
+        alignSelf:'center',
+        bottom:moderateScale(-20)
+    },
+
+    crossBtn: {
+        height:moderateScale(20),
+        width:moderateScale(20),
+        bottom:moderateScale(-20)
+    },
+
+    modal :{
+        borderWidth:2,
+        borderColor:'teal',
+        backgroundColor:'white',
+        borderRadius:15,
+        maxHeight:moderateScale(380),
+        alignSelf:'center',
+        width:'85%',
+        marginHorizontal:moderateScale(20), 
+        marginTop:moderateScale(200),
+        overflow:'hidden'
+    }
+
+})
 export default ReferralModal;

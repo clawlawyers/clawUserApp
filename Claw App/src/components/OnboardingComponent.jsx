@@ -1,5 +1,5 @@
 import React,{useRef, useState} from 'react';
-import {View, StyleSheet, FlatList, Animated, Dimensions, Pressable, Text, Image, LayoutAnimation, NativeModules} from 'react-native';
+import {View, StyleSheet, FlatList,  Dimensions,  Text, Image,  NativeModules} from 'react-native';
 import OnboardingItem from './OnboardingItem';
 import Onboardingchevron from '../assets/Onbordingchevron.png'
 import features from '../data/features';
