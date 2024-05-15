@@ -67,14 +67,14 @@ const [searchBtnBorder, setSearchBtnBorder] = useState(1);
       
         <View>
           
-          <TouchableOpacity onPress={() => navigation.navigate('CaseSearchScreen')}>
+          <TouchableOpacity onPress={() => navigation.navigate('CaseSearchScreen')} style={{borderRadius:15, overflow:'hidden'}}>
           <ImageBackground 
             source={tealBackground} 
             resizeMode='cover' 
             style={localStyles.btnContainer}
           >
             <Image source={searchIconWhite} style={localStyles.searchIcon}/>
-            <Text style={{color:'white'}}>Case Search</Text>
+            <Text style={{color:'white',fontSize:12}}>Case Search</Text>
             </ImageBackground>
           </TouchableOpacity>
         </View>
@@ -84,13 +84,14 @@ const [searchBtnBorder, setSearchBtnBorder] = useState(1);
 const localStyles = StyleSheet.create({
   
   btnContainer: {
-    height:moderateScale(20),
-    width:moderateScale(20),
-    marginRight:moderateScale(5)
+    flexDirection:'row',
+    paddingHorizontal:18,
+    alignItems:'center',
+    paddingVertical:7
   },
   searchIcon: {
-    width:moderateScale(13),
-    height:moderateScale(11),
+    width:moderateScale(18),
+    height:moderateScale(18),
     marginHorizontal:moderateScale(5)
   }
 })

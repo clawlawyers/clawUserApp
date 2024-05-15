@@ -72,7 +72,7 @@ const ReferralModal = ({isVisible}) => {
                 backdropTransitionInTiming={300}
                 backdropTransitionOutTiming={300}
                 style={localStyles.modal}
-            >local
+            >
                 {/* <ImageBackground source={referralBackground} opacity={0.2}> */}
                     <View style={{marginHorizontal:moderateScale(20),opacity:1,paddingTop:moderateScale(150)}}>
                         <TouchableOpacity onPress={close} style={{alignItems:'flex-end'}}>
@@ -88,13 +88,10 @@ const ReferralModal = ({isVisible}) => {
                                 onChangeText={(text) => setReferralCode(text)}
                             />
                             <ImageBackground source={tealBackground} style={localStyles.btnContainer}>
-                                <TouchableOpacity onPress={redeemCode} >
-
-                                <Text style={btnText}>Redeem</Text>
+                                <TouchableOpacity onPress={redeemCode} ><Text style={localStyles.btnText}>Redeem</Text>
                                 </TouchableOpacity>
                             </ImageBackground>
                         </View>
-                        
                     </View>
                 {/* </ImageBackground> */}
                     

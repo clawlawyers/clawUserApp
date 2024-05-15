@@ -133,7 +133,6 @@ const localSigninHelper = async({data,navigation,dispatch}) =>{
   if(userId){
     dispatch(changeVariable('jwtToken',userId));
     dispatch(changeVariable('phone_no',phone_no));
-    console.log('vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv')
     //createNewGPTUser(userId);
     // getUserProfile();
     navigation.replace('UserFlow');
